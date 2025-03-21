@@ -1,0 +1,52 @@
+# \u670D\u52A1\u5668\u7AEF\u53E3\u914D\u7F6E
+server:
+  port: 8080
+# Spring \u914D\u7F6E
+spring:
+  application:
+    name: MyBlog
+  profiles:
+    active: dev
+  # \u6570\u636E\u6E90\u914D\u7F6E
+  datasource:
+    driver-class-name: ${spring.datasource.driver-class-name}
+    url: jdbc:mysql://${spring.datasource.host}:${spring.datasource.port}/${spring.datasource.database}?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
+    username: ${spring.datasource.username}
+    password: ${spring.datasource.password}
+# MyBatis \u914D\u7F6E
+mybatis:
+  # Mapper XML \u6587\u4EF6\u4F4D\u7F6E
+  mapper-locations: classpath:mapper/*.xml
+  # \u5B9E\u4F53\u7C7B\u5305\u8DEF\u5F84
+  type-aliases-package: com.blog.entity
+  # \u5F00\u542F\u9A7C\u5CF0\u547D\u540D\u81EA\u52A8\u6620\u5C04\uFF08\u6570\u636E\u5E93\u5B57\u6BB5 user_id \u6620\u5C04\u5230 Java \u5C5E\u6027 userId\uFF09
+  configuration:
+    map-underscore-to-camel-case: true
+# \u65E5\u5FD7\u914D\u7F6E
+logging:
+  level:
+    com:
+      blog:
+        mapper: debug
+        controller: info
+        service: info
+# springdoc-openapi\u9879\u76EE\u914D\u7F6E
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    tags-sorter: alpha
+    operations-sorter: alpha
+  api-docs:
+    path: /v3/api-docs
+  group-configs:
+    - group: 'userAPI'
+      paths-to-match: '/**'
+      packages-to-scan: com.blog.controller.user
+    - group: 'adminAPI'
+      paths-to-match: '/**'
+      packages-to-scan: com.blog.controller.admin
+# knife4j\u7684\u589E\u5F3A\u914D\u7F6E\uFF0C\u4E0D\u9700\u8981\u589E\u5F3A\u53EF\u4EE5\u4E0D\u914D
+knife4j:
+  enable: true
+  setting:
+    language: zh_cn
