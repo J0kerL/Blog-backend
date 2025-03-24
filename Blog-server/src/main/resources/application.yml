@@ -1,6 +1,8 @@
 # 服务器端口配置
 server:
   port: 8080
+  servlet:
+    context-path: /api
 # Spring 配置
 spring:
   application:

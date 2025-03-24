@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @Date 2025/3/21 16:07
  */
 @RestController
-@RequestMapping("/user/user")
+@RequestMapping("/user")
 @Tag(name = "用户相关接口")
 public class UserController {
 
