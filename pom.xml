@@ -18,6 +18,7 @@
         <java.version>17</java.version>
         <mybatis.spring>3.0.4</mybatis.spring>
         <mysql.connector>8.0.33</mysql.connector>
+        <jwt>0.9.1</jwt>
     </properties>
     <!--引用子模块信息-->
     <modules>
@@ -40,6 +41,11 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt</artifactId>
+            <version>${jwt}</version>
         </dependency>
     </dependencies>
 </project>
