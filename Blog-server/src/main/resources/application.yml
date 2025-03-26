@@ -35,27 +35,32 @@ logging:
 # springdoc-openapi项目配置
 springdoc:
   swagger-ui:
+    # 自定义swagger前端请求路径,例：输入http:localhost:8080/swagger-ui.html会自动重定向到swagger页面
     path: /swagger-ui.html
     tags-sorter: alpha
     operations-sorter: alpha
   api-docs:
+    # swagger后端请求地址
     path: /v3/api-docs
+  # 分组配置
   group-configs:
+    # 分组名称
     - group: 'userAPI'
-      paths-to-match: '/**'
-      packages-to-scan: com.blog.controller.user
+      paths-to-match: '/user/**'
+      packages-to-scan: com.blog.controller
     - group: 'adminAPI'
-      paths-to-match: '/**'
-      packages-to-scan: com.blog.controller.admin
+      paths-to-match: '/admin/**'
+      packages-to-scan: com.blog.controller
 # knife4j的增强配置，不需要可以不配
 knife4j:
+  # 开启knife4j,无需添加@EnableKnife4j注解
   enable: true
   setting:
     language: zh_cn
 blog:
   jwt:
     # 设置jwt签名加密时使用的秘钥
-    secret-key: Diamond
+    secret-key: abcdefghijklmnopqrstuvwxyz1234567891
     # 设置jwt过期时间 2小时
     ttl: 7200000
     # 设置前端传递过来的令牌名称

@@ -1,6 +1,8 @@
 package com.blog.service;
 
 import com.blog.dto.UserDTO;
+import com.blog.dto.UserLoginDTO;
+import com.blog.entity.User;
 import com.blog.vo.UserVO;
 
 /**
@@ -16,4 +18,10 @@ public interface UserService {
      */
     UserVO register(UserDTO userDTO);
 
+    /**
+     * 登录
+     * @param userLoginDTO
+     * @return
+     */
+    User login(UserLoginDTO userLoginDTO);
 }

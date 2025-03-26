@@ -13,7 +13,7 @@ public class UserVO {
 
     private String username;
     private String password;
-    private int status;
-    private int role;
+    private Integer status;
+    private Integer role;
 
 }

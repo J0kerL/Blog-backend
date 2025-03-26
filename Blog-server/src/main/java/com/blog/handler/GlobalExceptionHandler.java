@@ -1,0 +1,51 @@
+package com.blog.handler;
+
+import com.blog.constant.Constant;
+import com.blog.exception.BaseException;
+import com.blog.result.Result;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import java.sql.SQLIntegrityConstraintViolationException;
+
+/**
+ * @Author Java小猪
+ * @Date 2025/3/26 10:10
+ * 全局异常处理器，处理项目中抛出的业务异常
+ */
+@RestControllerAdvice
+@Slf4j
+public class GlobalExceptionHandler {
+
+    /**
+     * 捕获业务异常
+     *
+     * @param ex
+     * @return
+     */
+    @ExceptionHandler
+    public Result<String> exceptionHandler(BaseException ex) {
+        log.error("异常信息：{}", ex.getMessage());
+        return Result.error(ex.getMessage());
+    }
+
+
+    /**
+     * 处理SQL异常
+     *
+     * @param ex
+     * @return
+     */
+    @ExceptionHandler
+    public Result<String> exceptionHandler(SQLIntegrityConstraintViolationException ex) {
+        // Duplicate entry 'zhangsan' for key 'employee.idx_username'
+        String message = ex.getMessage();
+        if (message.contains("Duplicate entry")) {
+            String[] split = message.split(" ");
+            String msg = split[2] + Constant.ALREADY_EXISTS;
+            return Result.error(msg);
+        }
+        return Result.error(Constant.UNKNOWN_ERROR);
+    }
+}
