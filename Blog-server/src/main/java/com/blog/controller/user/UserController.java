@@ -10,8 +10,6 @@ import com.blog.service.UserService;
 import com.blog.utils.JwtUtil;
 import com.blog.vo.UserLoginVO;
 import com.blog.vo.UserVO;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,7 +26,6 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("/user")
-@Tag(name = "用户相关接口")
 @Slf4j
 public class UserController {
 
@@ -44,7 +41,6 @@ public class UserController {
      * @return
      */
     @PostMapping("/register")
-    @Operation(summary = "注册")
     public Result<UserVO> register(@RequestBody UserDTO userDTO) {
 
         UserVO userVO = userService.register(userDTO);
@@ -62,7 +58,6 @@ public class UserController {
      * @return
      */
     @PostMapping("/login")
-    @Operation(summary = "登录")
     public Result<UserLoginVO> login(@RequestBody UserLoginDTO userLoginDTO) {
         log.info("用户登录：{}", userLoginDTO);
         User user = userService.login(userLoginDTO);
@@ -76,6 +71,16 @@ public class UserController {
                 .token(token)
                 .build();
         log.info("当前登录用户：{}", userLoginVO);
-        return Result.success(userLoginVO,Constant.SUCCESS_LOGIN);
+        return Result.success(userLoginVO, Constant.SUCCESS_LOGIN);
+    }
+
+    /**
+     * 退出登录
+     *
+     * @return
+     */
+    @PostMapping("/logout")
+    public Result<String> logout() {
+        return Result.success("已退出登录");
     }
 }

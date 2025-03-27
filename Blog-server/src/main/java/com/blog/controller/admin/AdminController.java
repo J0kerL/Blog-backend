@@ -11,8 +11,6 @@ import com.blog.service.UserService;
 import com.blog.utils.JwtUtil;
 import com.blog.vo.UserLoginVO;
 import com.blog.vo.UserVO;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -26,7 +24,6 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("/admin")
-@Tag(name = "管理员相关接口")
 @Slf4j
 public class AdminController {
 
@@ -44,7 +41,6 @@ public class AdminController {
      * @return
      */
     @GetMapping("/{username}")
-    @Operation(summary = "根据用户名查询用户信息")
     public Result<User> getByName(@PathVariable("username") String username) {
         User user = adminService.getByName(username);
         if (user == null) {
@@ -61,7 +57,6 @@ public class AdminController {
      * @return
      */
     @PostMapping("/register")
-    @Operation(summary = "注册")
     public Result<UserVO> register(@RequestBody UserDTO userDTO) {
 
         UserVO userVO = userService.register(userDTO);
@@ -79,7 +74,6 @@ public class AdminController {
      * @return
      */
     @PostMapping("/login")
-    @Operation(summary = "登录")
     public Result<UserLoginVO> login(@RequestBody UserLoginDTO userLoginDTO) {
         log.info("用户登录：{}", userLoginDTO);
         User user = userService.login(userLoginDTO);
@@ -94,5 +88,15 @@ public class AdminController {
                 .build();
         log.info("当前登录用户：{}", userLoginVO);
         return Result.success(userLoginVO);
+    }
+
+    /**
+     * 退出登录
+     *
+     * @return
+     */
+    @PostMapping("/logout")
+    public Result<String> logout() {
+        return Result.success("已退出登录");
     }
 }
