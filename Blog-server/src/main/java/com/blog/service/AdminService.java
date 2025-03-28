@@ -1,5 +1,6 @@
 package com.blog.service;
 
+import com.blog.dto.UserLoginDTO;
 import com.blog.entity.User;
 
 /**
@@ -14,5 +15,12 @@ public interface AdminService {
      * @return
      */
     User getByName(String username);
+
+    /**
+     * 登录
+     * @param userLoginDTO
+     * @return
+     */
+    User login(UserLoginDTO userLoginDTO);
 
 }

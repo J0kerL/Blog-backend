@@ -63,14 +63,13 @@ public class UserController {
     }
 
     /**
-     * 登录
+     * 用户前端登录
      *
      * @param userLoginDTO
      * @return
      */
     @PostMapping("/login")
     public Result<UserLoginVO> login(@RequestBody UserLoginDTO userLoginDTO) {
-        log.info("用户登录：{}", userLoginDTO);
         User user = userService.login(userLoginDTO);
         // 登录成功后，生成jwt令牌
         Map<String, Object> claims = new HashMap<>();

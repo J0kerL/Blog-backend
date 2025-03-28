@@ -1,6 +1,5 @@
 package com.blog.service.impl;
 
-import com.blog.constant.Constant;
 import com.blog.dto.UserLoginDTO;
 import com.blog.dto.UserRegisterDTO;
 import com.blog.entity.User;
@@ -76,23 +75,25 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public User login(UserLoginDTO userLoginDTO) {
-        String username = userLoginDTO.getUsername();
+        // 可以用户名和密码登录 也可以邮箱和密码登录
+        // 获取用户输入的用户名/邮箱和密码
+        String account = userLoginDTO.getAccount();
         String password = userLoginDTO.getPassword();
-        //1、根据用户名查询数据库中的数据
-        User user = adminMapper.getByName(username);
-        //2、处理各种异常情况（用户名不存在、密码不对、账号被锁定）
+        //1、根据account查询数据库中的数据
+        User user = adminMapper.getUser(account);
+        //2、处理各种异常情况（用户名/邮箱不存在、密码不对、账号被锁定）
         if (user == null) {
             //账号不存在
-            throw new AccountNotFoundException(Constant.USER_NOT_FOUND);
+            throw new AccountNotFoundException(USER_NOT_FOUND);
         }
         //密码比对
         if (!user.getPassword().equals(password)) {
             //密码错误
-            throw new PasswordErrorException(Constant.PASSWORD_ERROR);
+            throw new PasswordErrorException(PASSWORD_ERROR);
         }
         //账号被锁定
-        if (user.getStatus().equals(Constant.DISABLE)) {
-            throw new AccountLockedException(Constant.ACCOUNT_LOCKED);
+        if (user.getStatus().equals(DISABLE)) {
+            throw new AccountLockedException(ACCOUNT_LOCKED);
         }
         //3、返回实体对象
         return user;

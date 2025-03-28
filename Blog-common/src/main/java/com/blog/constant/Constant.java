@@ -7,10 +7,14 @@ package com.blog.constant;
  */
 public class Constant {
 
-    //启用
+    // 正常
     public static final Integer ENABLE = 1;
-    //禁用
+    // 普通用户
+    public static final Integer NORMAL_USER = 1;
+    // 禁用
     public static final Integer DISABLE = 0;
+    // 管理员
+    public static final Integer SUPER_USER = 0;
     public static final String ALREADY_EXISTS = "用户已存在";
     public static final String USER_NOT_FOUND = "用户不存在";
     public static final String PASSWORD_ERROR = "密码错误";
@@ -25,8 +29,9 @@ public class Constant {
     public static final String YOUR_CODE = "您的验证码是：";
     public static final String EXPIRATION_DATE = "，有效期 5 分钟，请勿泄露。";
     public static final String CODE_KEY = "captcha:";
-    public static final String ALREADY_EXIT = "已成功退出登录:";
-    public static final String CODE_PASS = "验证码已过期:";
-    public static final String CODE_ERROR = "验证码错误:";
+    public static final String ALREADY_EXIT = "已成功退出登录";
+    public static final String CODE_PASS = "验证码已过期";
+    public static final String CODE_ERROR = "验证码错误";
+    public static final String NOT_HAVE_POWER = "没有权限";
 
 }

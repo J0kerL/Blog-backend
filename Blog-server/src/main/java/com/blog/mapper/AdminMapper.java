@@ -17,4 +17,11 @@ public interface AdminMapper {
     @Select("select *from user where username = #{username}")
     User getByName(String username);
 
+    /**
+     * 登录查询用户
+     * @param account
+     * @return
+     */
+    @Select("select *from user where username = #{account} or email = #{account}")
+    User getUser(String account);
 }
