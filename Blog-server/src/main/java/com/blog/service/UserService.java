@@ -1,7 +1,7 @@
 package com.blog.service;
 
-import com.blog.dto.UserDTO;
 import com.blog.dto.UserLoginDTO;
+import com.blog.dto.UserRegisterDTO;
 import com.blog.entity.User;
 import com.blog.vo.UserVO;
 
@@ -13,10 +13,10 @@ public interface UserService {
 
     /**
      * 注册
-     * @param userDTO
+     * @param userRegisterDTO
      * @return
      */
-    UserVO register(UserDTO userDTO);
+    UserVO register(UserRegisterDTO userRegisterDTO);
 
     /**
      * 登录
@@ -24,4 +24,11 @@ public interface UserService {
      * @return
      */
     User login(UserLoginDTO userLoginDTO);
+
+    /**
+     * 发送验证码
+     * @param email
+     * @return
+     */
+    String sendCaptchaEmail(String email);
 }

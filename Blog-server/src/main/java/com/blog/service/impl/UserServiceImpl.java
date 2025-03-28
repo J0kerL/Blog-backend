@@ -1,8 +1,8 @@
 package com.blog.service.impl;
 
 import com.blog.constant.Constant;
-import com.blog.dto.UserDTO;
 import com.blog.dto.UserLoginDTO;
+import com.blog.dto.UserRegisterDTO;
 import com.blog.entity.User;
 import com.blog.exception.AccountLockedException;
 import com.blog.exception.AccountNotFoundException;
@@ -10,9 +10,18 @@ import com.blog.exception.PasswordErrorException;
 import com.blog.mapper.AdminMapper;
 import com.blog.mapper.UserMapper;
 import com.blog.service.UserService;
+import com.blog.utils.CaptchaUtil;
 import com.blog.vo.UserVO;
 import jakarta.annotation.Resource;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
+
+import java.util.concurrent.TimeUnit;
+
+import static com.blog.constant.Constant.*;
 
 /**
  * @Author Java小猪
@@ -25,28 +34,36 @@ public class UserServiceImpl implements UserService {
     private UserMapper userMapper;
     @Resource
     private AdminMapper adminMapper;
+    @Resource
+    private JavaMailSender mailSender;
+    @Resource
+    private RedisTemplate<String, Object> redisTemplate;
+
+    @Value("${spring.mail.username}")
+    public String emailAddress;
 
     /**
      * 注册
      *
-     * @param userDTO
+     * @param userRegisterDTO
      * @return
      */
     @Override
-    public UserVO register(UserDTO userDTO) {
+    public UserVO register(UserRegisterDTO userRegisterDTO) {
         // 根据用户名查询用户信息
-        User user = adminMapper.getByName(userDTO.getUsername());
+        User user = adminMapper.getByName(userRegisterDTO.getUsername());
         // 用户名已存在 不能注册
         if (user != null) {
             return null;
         }
         // 不存在 注册
-        userMapper.register(userDTO.getUsername(), userDTO.getPassword());
+        userMapper.register(userRegisterDTO.getUsername(), userRegisterDTO.getPassword(), userRegisterDTO.getEmail());
         // 不返回明文密码
         return UserVO.builder()
-                .username(userDTO.getUsername())
+                .username(userRegisterDTO.getUsername())
                 .password("******")
                 .status(1)
+                .email(userRegisterDTO.getEmail())
                 .role(1)
                 .build();
     }
@@ -66,7 +83,7 @@ public class UserServiceImpl implements UserService {
         //2、处理各种异常情况（用户名不存在、密码不对、账号被锁定）
         if (user == null) {
             //账号不存在
-            throw  new AccountNotFoundException(Constant.USER_NOT_FOUND);
+            throw new AccountNotFoundException(Constant.USER_NOT_FOUND);
         }
         //密码比对
         if (!user.getPassword().equals(password)) {
@@ -74,11 +91,35 @@ public class UserServiceImpl implements UserService {
             throw new PasswordErrorException(Constant.PASSWORD_ERROR);
         }
         //账号被锁定
-        if (user.getStatus().equals(Constant.DISABLE)){
+        if (user.getStatus().equals(Constant.DISABLE)) {
             throw new AccountLockedException(Constant.ACCOUNT_LOCKED);
         }
         //3、返回实体对象
         return user;
     }
 
+    /**
+     * 发送验证码
+     *
+     * @param email
+     * @return
+     */
+    @Override
+    public String sendCaptchaEmail(String email) {
+        // 生成验证码
+        String captcha = CaptchaUtil.generateCaptcha();
+        // 存储到 Redis，设置 5 分钟过期
+        redisTemplate.opsForValue().set(CODE_KEY + email, captcha, 5, TimeUnit.MINUTES);
+        // 发送邮件
+        SimpleMailMessage message = new SimpleMailMessage();
+        // 发件人
+        message.setFrom(emailAddress);
+        // 收件人
+        message.setTo(email);
+        message.setSubject(CODE);
+        message.setText(YOUR_CODE + captcha + EXPIRATION_DATE);
+        mailSender.send(message);
+        return "验证码为：" + message.getText();
+    }
 }
+

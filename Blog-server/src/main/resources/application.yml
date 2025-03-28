@@ -11,10 +11,41 @@ spring:
     active: dev
   # 数据源配置
   datasource:
-    driver-class-name: ${spring.datasource.driver-class-name}
-    url: jdbc:mysql://${spring.datasource.host}:${spring.datasource.port}/${spring.datasource.database}?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
-    username: ${spring.datasource.username}
-    password: ${spring.datasource.password}
+    driver-class-name: ${blog.datasource.driver-class-name}
+    url: jdbc:mysql://${blog.datasource.host}:${blog.datasource.port}/${blog.datasource.database}?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
+    username: ${blog.datasource.username}
+    password: ${blog.datasource.password}
+  data:
+    redis:
+      host: ${blog.data.redis.host}
+      port: ${blog.data.redis.port}
+      password: ${blog.data.redis.password}
+      database: ${blog.data.redis.database}
+
+  # 配置邮件服务（使用 QQ 邮箱的 SMTP 服务器）
+  mail:
+    # 邮件服务器主机为 smtp.qq.com
+    host: smtp.qq.com
+    username: 2210054954@qq.com
+    # 授权码
+    password: lzdenxvjursldhhc
+    default-encoding: UTF-8
+    protocol: smtp
+    port: 465
+    properties:
+      mail:
+        # SMTP 协议的属性
+        smtp:
+          # Socket 工厂使用的端口为 465
+          socketFactory:
+            port: 465
+            # 使用 SSL Socket 工厂进行加密通信
+            class: javax.net.ssl.SSLSocketFactory
+            # 表示开启 DEBUG 模式，这样，邮件发送过程的日志会在控制台打印出来，方便排查错误
+            debug: true
+          ssl:
+            # 启用 SSL 加密
+            enable: true
 # MyBatis 配置
 mybatis:
   # Mapper XML 文件配置
@@ -39,4 +70,4 @@ blog:
     # 设置jwt过期时间 2小时
     ttl: 7200000
     # 设置前端传递过来的令牌名称
-    token-name: authentication
+    token-name: token

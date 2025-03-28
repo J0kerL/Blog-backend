@@ -1,7 +1,6 @@
 package com.blog.controller.admin;
 
 import com.blog.constant.Constant;
-import com.blog.dto.UserDTO;
 import com.blog.dto.UserLoginDTO;
 import com.blog.entity.User;
 import com.blog.properties.JwtProperties;
@@ -10,7 +9,6 @@ import com.blog.service.AdminService;
 import com.blog.service.UserService;
 import com.blog.utils.JwtUtil;
 import com.blog.vo.UserLoginVO;
-import com.blog.vo.UserVO;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -48,23 +46,6 @@ public class AdminController {
         }
         log.info("查询到的用户为：{}", user);
         return Result.success(user);
-    }
-
-    /**
-     * 注册
-     *
-     * @param userDTO
-     * @return
-     */
-    @PostMapping("/register")
-    public Result<UserVO> register(@RequestBody UserDTO userDTO) {
-
-        UserVO userVO = userService.register(userDTO);
-        if (userVO == null) {
-            return Result.error(Constant.ALREADY_EXISTS);
-        }
-        log.info("注册成功：{}", userVO);
-        return Result.success(userVO, Constant.SUCCESS_REGISTER);
     }
 
     /**

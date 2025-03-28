@@ -1,4 +1,4 @@
-spring:
+blog:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     host: localhost
@@ -6,3 +6,9 @@ spring:
     database: blog
     username: root
     password: 1234
+  data:
+    redis:
+      host: 192.168.132.129
+      port: 6379
+      password: 1234
+      database: 2

@@ -1,8 +1,7 @@
 package com.blog.controller.user;
 
-import com.blog.constant.Constant;
-import com.blog.dto.UserDTO;
 import com.blog.dto.UserLoginDTO;
+import com.blog.dto.UserRegisterDTO;
 import com.blog.entity.User;
 import com.blog.properties.JwtProperties;
 import com.blog.result.Result;
@@ -12,13 +11,13 @@ import com.blog.vo.UserLoginVO;
 import com.blog.vo.UserVO;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.blog.constant.Constant.*;
 
 /**
  * @Author Java小猪
@@ -33,22 +32,34 @@ public class UserController {
     private UserService userService;
     @Resource
     private JwtProperties jwtProperties;
+    @Resource
+    private RedisTemplate<String, String> redisTemplate;
 
     /**
      * 注册
      *
-     * @param userDTO
+     * @param userRegisterDTO
      * @return
      */
     @PostMapping("/register")
-    public Result<UserVO> register(@RequestBody UserDTO userDTO) {
-
-        UserVO userVO = userService.register(userDTO);
+    public Result<UserVO> register(@RequestBody UserRegisterDTO userRegisterDTO) {
+        // 校验验证码
+        String storedCaptcha = redisTemplate.opsForValue().get(CODE_KEY + userRegisterDTO.getEmail());
+        if (storedCaptcha == null) {
+            return Result.error(CODE_PASS);
+        }
+        if (!storedCaptcha.equals(userRegisterDTO.getCode())) {
+            return Result.error(CODE_ERROR);
+        }
+        // 验证码正确，继续注册
+        UserVO userVO = userService.register(userRegisterDTO);
         if (userVO == null) {
-            return Result.error(Constant.ALREADY_EXISTS);
+            return Result.error(ALREADY_EXISTS);
         }
         log.info("注册成功：{}", userVO);
-        return Result.success(userVO, Constant.SUCCESS_REGISTER);
+        // 注册成功后删除验证码
+        redisTemplate.delete(CODE_KEY + userRegisterDTO.getEmail());
+        return Result.success(userVO, SUCCESS_REGISTER);
     }
 
     /**
@@ -63,7 +74,7 @@ public class UserController {
         User user = userService.login(userLoginDTO);
         // 登录成功后，生成jwt令牌
         Map<String, Object> claims = new HashMap<>();
-        claims.put(Constant.USER_ID, user.getId());
+        claims.put(USER_ID, user.getId());
         String token = JwtUtil.createJWT(jwtProperties.getSecretKey(), jwtProperties.getTtl(), claims);
         UserLoginVO userLoginVO = UserLoginVO.builder()
                 .id(user.getId())
@@ -71,7 +82,7 @@ public class UserController {
                 .token(token)
                 .build();
         log.info("当前登录用户：{}", userLoginVO);
-        return Result.success(userLoginVO, Constant.SUCCESS_LOGIN);
+        return Result.success(userLoginVO, SUCCESS_LOGIN);
     }
 
     /**
@@ -81,6 +92,18 @@ public class UserController {
      */
     @PostMapping("/logout")
     public Result<String> logout() {
-        return Result.success("已退出登录");
+        return Result.success(ALREADY_EXIT);
+    }
+
+    /**
+     * 发送验证码
+     *
+     * @param email
+     * @return
+     */
+    @GetMapping("/captcha")
+    public Result<String> sendCaptcha(@RequestParam String email) {
+        String code = userService.sendCaptchaEmail(email);
+        return Result.success(code);
     }
 }

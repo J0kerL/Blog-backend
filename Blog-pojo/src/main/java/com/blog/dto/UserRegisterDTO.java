@@ -9,10 +9,11 @@ import java.io.Serializable;
  * @Date 2025/3/24 17:00
  */
 @Data
-public class UserDTO implements Serializable {
+public class UserRegisterDTO implements Serializable {
 
     private String username;
     private String password;
     private String email;
+    private String code;
 
 }
