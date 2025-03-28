@@ -12,6 +12,7 @@ import com.blog.service.UserService;
 import com.blog.utils.CaptchaUtil;
 import com.blog.vo.UserVO;
 import jakarta.annotation.Resource;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.mail.SimpleMailMessage;
@@ -27,6 +28,7 @@ import static com.blog.constant.Constant.*;
  * @Date 2025/3/25 16:31
  */
 @Service
+@Slf4j
 public class UserServiceImpl implements UserService {
 
     @Resource
@@ -120,7 +122,8 @@ public class UserServiceImpl implements UserService {
         message.setSubject(CODE);
         message.setText(YOUR_CODE + captcha + EXPIRATION_DATE);
         mailSender.send(message);
-        return "验证码为：" + message.getText();
+        log.info("验证码为：{}", redisTemplate.opsForValue().get(CODE_KEY + email));
+        return message.getText();
     }
 }
 
