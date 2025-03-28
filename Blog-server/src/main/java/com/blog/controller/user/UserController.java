@@ -78,6 +78,7 @@ public class UserController {
         UserLoginVO userLoginVO = UserLoginVO.builder()
                 .id(user.getId())
                 .username(user.getUsername())
+                .email(user.getEmail())
                 .token(token)
                 .build();
         log.info("当前登录用户：{}", userLoginVO);

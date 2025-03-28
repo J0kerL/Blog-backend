@@ -8,6 +8,7 @@ import static com.blog.constant.Constant.LENGTH;
 /**
  * @Author Java小猪
  * @Date 2025/3/28 14:47
+ * 生成6位随机数的验证码
  */
 public class CaptchaUtil {
 
