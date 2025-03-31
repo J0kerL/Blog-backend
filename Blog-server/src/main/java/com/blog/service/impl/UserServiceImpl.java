@@ -40,6 +40,8 @@ public class UserServiceImpl implements UserService {
     @Resource
     private RedisTemplate<String, Object> redisTemplate;
 
+    public static final String AVATAR_URL = "https://diamond-blog.oss-cn-beijing.aliyuncs.com/defaultAvatar.jpg";
+
     @Value("${spring.mail.username}")
     public String emailAddress;
 
@@ -64,6 +66,7 @@ public class UserServiceImpl implements UserService {
                 .username(userRegisterDTO.getUsername())
                 .password("******")
                 .status(1)
+                .avatar(AVATAR_URL)
                 .email(userRegisterDTO.getEmail())
                 .role(1)
                 .build();

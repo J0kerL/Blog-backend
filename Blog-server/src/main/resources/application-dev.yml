@@ -12,3 +12,8 @@ blog:
       port: 6379
       password: 1234
       database: 2
+  alioss:
+    endpoint: oss-cn-beijing.aliyuncs.com
+    access-key-id: LTAI5tM55aiju7WQD99sgegg
+    access-key-secret: IBBCxiG9b7LWYmEKkWZ52JLHMD74dI
+    bucket-name: diamond-blog
