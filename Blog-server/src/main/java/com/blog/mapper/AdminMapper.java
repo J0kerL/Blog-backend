@@ -1,6 +1,8 @@
 package com.blog.mapper;
 
+import com.blog.dto.UserPageQueryDTO;
 import com.blog.entity.User;
+import com.github.pagehelper.Page;
 import org.apache.ibatis.annotations.Select;
 
 /**
@@ -24,4 +26,12 @@ public interface AdminMapper {
      */
     @Select("select *from user where username = #{account} or email = #{account}")
     User getUser(String account);
+
+    /**
+     * 员工分页查询
+     * @param userPageQueryDTO
+     * @return
+     */
+    @Select("select *from user")
+    Page<User> query(UserPageQueryDTO userPageQueryDTO);
 }

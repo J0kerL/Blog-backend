@@ -1,8 +1,10 @@
 package com.blog.controller.admin;
 
 import com.blog.dto.UserLoginDTO;
+import com.blog.dto.UserPageQueryDTO;
 import com.blog.entity.User;
 import com.blog.properties.JwtProperties;
+import com.blog.result.PageResult;
 import com.blog.result.Result;
 import com.blog.service.AdminService;
 import com.blog.utils.JwtUtil;
@@ -76,5 +78,16 @@ public class AdminController {
     @PostMapping("/logout")
     public Result<String> logout() {
         return Result.success(ALREADY_EXIT);
+    }
+
+    /**
+     *员工分页查询
+     * @param userPageQueryDTO
+     * @return
+     */
+    @GetMapping("/page")
+    public Result<PageResult> pageQuery(@RequestBody UserPageQueryDTO userPageQueryDTO) {
+        PageResult pageResult = adminService.query(userPageQueryDTO);
+        return Result.success(pageResult);
     }
 }

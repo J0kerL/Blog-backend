@@ -1,7 +1,9 @@
 package com.blog.service;
 
 import com.blog.dto.UserLoginDTO;
+import com.blog.dto.UserPageQueryDTO;
 import com.blog.entity.User;
+import com.blog.result.PageResult;
 
 /**
  * @Author Java小猪
@@ -23,4 +25,10 @@ public interface AdminService {
      */
     User login(UserLoginDTO userLoginDTO);
 
+    /**
+     * 员工分页查询
+     * @param userPageQueryDTO
+     * @return
+     */
+    PageResult query(UserPageQueryDTO userPageQueryDTO);
 }

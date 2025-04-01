@@ -1,15 +1,21 @@
 package com.blog.service.impl;
 
 import com.blog.dto.UserLoginDTO;
+import com.blog.dto.UserPageQueryDTO;
 import com.blog.entity.User;
 import com.blog.exception.AccountLockedException;
 import com.blog.exception.AccountNotFoundException;
 import com.blog.exception.NotHavePowerException;
 import com.blog.exception.PasswordErrorException;
 import com.blog.mapper.AdminMapper;
+import com.blog.result.PageResult;
 import com.blog.service.AdminService;
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 import static com.blog.constant.Constant.*;
 
@@ -69,6 +75,20 @@ public class AdminServiceImpl implements AdminService {
         }
         //3、返回实体对象
         return user;
+    }
+
+    /**
+     * 员工分页查询
+     * @param userPageQueryDTO
+     * @return
+     */
+    @Override
+    public PageResult query(UserPageQueryDTO userPageQueryDTO) {
+        PageHelper.startPage(userPageQueryDTO.getPage(), userPageQueryDTO.getPageSize());
+        Page<User> page = adminMapper.query(userPageQueryDTO);
+        long total = page.getTotal();
+        List<User> list = page.getResult();
+        return new PageResult(total, list);
     }
 
 }
