@@ -44,9 +44,6 @@ public class AdminController {
     @GetMapping("/{username}")
     public Result<UserVO> getByName(@PathVariable("username") String username) {
         UserVO userVO = adminService.getByName(username);
-//        if (user == null) {
-//            return Result.error(404,USER_NOT_FOUND);
-//        }
         log.info("查询到的用户为：{}", userVO);
         return Result.success(userVO);
     }
@@ -89,7 +86,7 @@ public class AdminController {
      * @return
      */
     @GetMapping("/page")
-    public Result<PageResult> pageQuery(@RequestBody UserPageQueryDTO userPageQueryDTO) {
+    public Result<PageResult> pageQuery(UserPageQueryDTO userPageQueryDTO) {
         PageResult pageResult = adminService.query(userPageQueryDTO);
         return Result.success(pageResult);
     }

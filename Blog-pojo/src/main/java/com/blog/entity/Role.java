@@ -9,23 +9,20 @@ import java.io.Serializable;
 
 /**
  * @Author Java小猪
- * @Date 2025/4/3 14:23
+ * @Date 2025/4/3 15:53
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Menu implements Serializable {
+public class Role implements Serializable {
 
     private Integer id;
-    private String path;
-    private String component;
-    private String title;
-    private Integer sort;
-    private String icon;
-    private String redirect;
+    // 角色编码
+    private String code;
+    // 角色名称
     private String name;
-    private Integer hidden;
-    private Integer isExternal;
+    // 备注
+    private String remarks;
 
 }
