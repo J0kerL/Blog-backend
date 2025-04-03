@@ -1,12 +1,15 @@
 package com.blog.controller.user;
 
 import com.blog.dto.UserLoginDTO;
+import com.blog.dto.UserPageQueryDTO;
 import com.blog.dto.UserRegisterDTO;
 import com.blog.entity.User;
 import com.blog.properties.JwtProperties;
+import com.blog.result.PageResult;
 import com.blog.result.Result;
 import com.blog.service.UserService;
 import com.blog.utils.JwtUtil;
+import com.blog.vo.MenuVO;
 import com.blog.vo.UserLoginVO;
 import com.blog.vo.UserVO;
 import jakarta.annotation.Resource;
@@ -15,6 +18,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static com.blog.constant.Constant.*;
@@ -34,6 +38,20 @@ public class UserController {
     private JwtProperties jwtProperties;
     @Resource
     private RedisTemplate<String, String> redisTemplate;
+
+
+    /**
+     * 根据用户名查询用户信息
+     *
+     * @param username
+     * @return
+     */
+    @GetMapping("/{username}")
+    public Result<UserVO> getByName(@PathVariable("username") String username) {
+        UserVO userVO = userService.getByName(username);
+        log.info("查询到的用户为：{}", userVO);
+        return Result.success(userVO);
+    }
 
     /**
      * 注册
@@ -63,7 +81,7 @@ public class UserController {
     }
 
     /**
-     * 用户前端登录
+     * 登录
      *
      * @param userLoginDTO
      * @return
@@ -106,4 +124,28 @@ public class UserController {
         String code = userService.sendCaptchaEmail(email);
         return Result.success(code);
     }
+
+    /**
+     * 用户分页查询
+     * @param userPageQueryDTO
+     * @return
+     */
+    @GetMapping("/page")
+    public Result<PageResult> pageQuery(UserPageQueryDTO userPageQueryDTO) {
+        PageResult pageResult = userService.query(userPageQueryDTO);
+        return Result.success(pageResult);
+    }
+
+    /**
+     * 获取菜单
+     * @return
+     */
+    @GetMapping("/menu")
+    public Result<List<MenuVO>> getMenu(){
+        List<MenuVO> list = userService.getMenu();
+        return Result.success(list);
+    }
+
+    // TODO 根据用户名查询用户时 参数为中文查询不了
+    // TODO 退出登录 进行token删除
 }

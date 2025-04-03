@@ -1,6 +1,5 @@
 package com.blog.handler;
 
-import com.blog.constant.Constant;
 import com.blog.exception.BaseException;
 import com.blog.result.Result;
 import lombok.extern.slf4j.Slf4j;
@@ -8,6 +7,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.sql.SQLIntegrityConstraintViolationException;
+
+import static com.blog.constant.Constant.ALREADY_EXISTS;
+import static com.blog.constant.Constant.UNKNOWN_ERROR;
 
 /**
  * @Author Java小猪
@@ -43,9 +45,9 @@ public class GlobalExceptionHandler {
         String message = ex.getMessage();
         if (message.contains("Duplicate entry")) {
             String[] split = message.split(" ");
-            String msg = split[2] + Constant.ALREADY_EXISTS;
+            String msg = split[2] + ALREADY_EXISTS;
             return Result.error(msg);
         }
-        return Result.error(Constant.UNKNOWN_ERROR);
+        return Result.error(UNKNOWN_ERROR);
     }
 }

@@ -1,16 +1,20 @@
 package com.blog.service.impl;
 
 import com.blog.dto.UserLoginDTO;
+import com.blog.dto.UserPageQueryDTO;
 import com.blog.dto.UserRegisterDTO;
 import com.blog.entity.User;
 import com.blog.exception.AccountLockedException;
 import com.blog.exception.AccountNotFoundException;
 import com.blog.exception.PasswordErrorException;
-import com.blog.mapper.AdminMapper;
 import com.blog.mapper.UserMapper;
+import com.blog.result.PageResult;
 import com.blog.service.UserService;
 import com.blog.utils.CaptchaUtil;
+import com.blog.vo.MenuVO;
 import com.blog.vo.UserVO;
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,6 +23,7 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static com.blog.constant.Constant.*;
@@ -34,8 +39,6 @@ public class UserServiceImpl implements UserService {
     @Resource
     private UserMapper userMapper;
     @Resource
-    private AdminMapper adminMapper;
-    @Resource
     private JavaMailSender mailSender;
     @Resource
     private RedisTemplate<String, Object> redisTemplate;
@@ -46,6 +49,28 @@ public class UserServiceImpl implements UserService {
     public String emailAddress;
 
     /**
+     * 根据用户名查询用户信息
+     *
+     * @param username
+     * @return
+     */
+    @Override
+    public UserVO getByName(String username) {
+        User user = userMapper.getByName(username);
+        if (user == null) {
+            throw new AccountNotFoundException(USER_NOT_FOUND);
+        }
+        return UserVO.builder()
+                .username(user.getUsername())
+                .password("******")
+                .status(user.getStatus())
+                .avatar(user.getAvatar())
+                .email(user.getEmail())
+                .role(user.getRole())
+                .build();
+    }
+
+    /**
      * 注册
      *
      * @param userRegisterDTO
@@ -54,7 +79,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserVO register(UserRegisterDTO userRegisterDTO) {
         // 根据用户名查询用户信息
-        User user = adminMapper.getByName(userRegisterDTO.getUsername());
+        User user = userMapper.getByName(userRegisterDTO.getUsername());
         // 用户名已存在 不能注册
         if (user != null) {
             return null;
@@ -85,7 +110,7 @@ public class UserServiceImpl implements UserService {
         String account = userLoginDTO.getAccount();
         String password = userLoginDTO.getPassword();
         //1、根据account查询数据库中的数据
-        User user = adminMapper.getUser(account);
+        User user = userMapper.getUser(account);
         //2、处理各种异常情况（用户名/邮箱不存在、密码不对、账号被锁定）
         if (user == null) {
             //账号不存在
@@ -127,6 +152,39 @@ public class UserServiceImpl implements UserService {
         mailSender.send(message);
         log.info("验证码为：{}", redisTemplate.opsForValue().get(CODE_KEY + email));
         return message.getText();
+    }
+
+    /**
+     * 用户分页查询
+     *
+     * @param userPageQueryDTO
+     * @return
+     */
+    @Override
+    public PageResult query(UserPageQueryDTO userPageQueryDTO) {
+        PageHelper.startPage(userPageQueryDTO.getPage(), userPageQueryDTO.getPageSize());
+        Page<User> page = userMapper.query(userPageQueryDTO);
+        long total = page.getTotal();
+        List<User> list = page.getResult();
+        list.forEach(user -> {
+            user.setPassword("******");
+        });
+        return new PageResult(total, list);
+    }
+
+    /**
+     * 获取菜单
+     *
+     * @return
+     */
+    @Override
+    public List<MenuVO> getMenu() {
+        List<MenuVO> list = userMapper.getMenu();
+        if (!list.isEmpty()) {
+            return list;
+        } else {
+            return null;
+        }
     }
 }
 

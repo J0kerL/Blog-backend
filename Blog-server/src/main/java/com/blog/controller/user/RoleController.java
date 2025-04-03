@@ -1,4 +1,4 @@
-package com.blog.controller.admin;
+package com.blog.controller.user;
 
 import com.blog.dto.RolePageQueryDTO;
 import com.blog.result.PageResult;

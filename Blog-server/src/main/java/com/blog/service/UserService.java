@@ -1,15 +1,27 @@
 package com.blog.service;
 
 import com.blog.dto.UserLoginDTO;
+import com.blog.dto.UserPageQueryDTO;
 import com.blog.dto.UserRegisterDTO;
 import com.blog.entity.User;
+import com.blog.result.PageResult;
+import com.blog.vo.MenuVO;
 import com.blog.vo.UserVO;
+
+import java.util.List;
 
 /**
  * @Author Java小猪
  * @Date 2025/3/25 16:31
  */
 public interface UserService {
+
+    /**
+     * 根据用户名查询用户信息
+     * @param username
+     * @return
+     */
+    UserVO getByName(String username);
 
     /**
      * 注册
@@ -31,4 +43,17 @@ public interface UserService {
      * @return
      */
     String sendCaptchaEmail(String email);
+
+    /**
+     * 用户分页查询
+     * @param userPageQueryDTO
+     * @return
+     */
+    PageResult query(UserPageQueryDTO userPageQueryDTO);
+
+    /**
+     * 获取菜单
+     * @return
+     */
+    List<MenuVO> getMenu();
 }
