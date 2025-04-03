@@ -30,7 +30,7 @@ public interface AdminService {
     User login(UserLoginDTO userLoginDTO);
 
     /**
-     * 员工分页查询
+     * 用户分页查询
      * @param userPageQueryDTO
      * @return
      */

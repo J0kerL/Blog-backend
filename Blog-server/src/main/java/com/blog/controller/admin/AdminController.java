@@ -84,7 +84,7 @@ public class AdminController {
     }
 
     /**
-     *员工分页查询
+     * 用户分页查询
      * @param userPageQueryDTO
      * @return
      */

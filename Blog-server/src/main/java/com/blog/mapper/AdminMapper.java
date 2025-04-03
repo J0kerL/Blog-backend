@@ -31,11 +31,10 @@ public interface AdminMapper {
     User getUser(String account);
 
     /**
-     * 员工分页查询
+     * 用户分页查询
      * @param userPageQueryDTO
      * @return
      */
-    @Select("select *from user")
     Page<User> query(UserPageQueryDTO userPageQueryDTO);
 
     /**

@@ -11,12 +11,15 @@ import java.io.Serializable;
 @Data
 public class UserPageQueryDTO implements Serializable {
 
-    //员工姓名
-    //private String name;
+    // 员工姓名
+    private String username;
 
-    //页码
+    // 账号状态
+    private Integer status;
+
+    // 页码
     private int page;
 
-    //每页显示记录数
+    // 每页显示记录数
     private int pageSize;
 }
