@@ -10,6 +10,8 @@ import com.blog.exception.PasswordErrorException;
 import com.blog.mapper.AdminMapper;
 import com.blog.result.PageResult;
 import com.blog.service.AdminService;
+import com.blog.vo.MenuVO;
+import com.blog.vo.UserVO;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import jakarta.annotation.Resource;
@@ -36,8 +38,19 @@ public class AdminServiceImpl implements AdminService {
      * @return
      */
     @Override
-    public User getByName(String username) {
-        return adminMapper.getByName(username);
+    public UserVO getByName(String username) {
+        User user = adminMapper.getByName(username);
+        if (user == null) {
+            throw new AccountNotFoundException(USER_NOT_FOUND);
+        }
+        return UserVO.builder()
+                .username(user.getUsername())
+                .password("******")
+                .status(user.getStatus())
+                .avatar(user.getAvatar())
+                .email(user.getEmail())
+                .role(user.getRole())
+                .build();
     }
 
     /**
@@ -79,6 +92,7 @@ public class AdminServiceImpl implements AdminService {
 
     /**
      * 员工分页查询
+     *
      * @param userPageQueryDTO
      * @return
      */
@@ -88,7 +102,25 @@ public class AdminServiceImpl implements AdminService {
         Page<User> page = adminMapper.query(userPageQueryDTO);
         long total = page.getTotal();
         List<User> list = page.getResult();
+        list.forEach(user -> {
+            user.setPassword("******");
+        });
         return new PageResult(total, list);
+    }
+
+    /**
+     * 获取菜单
+     *
+     * @return
+     */
+    @Override
+    public List<MenuVO> getMenu() {
+        List<MenuVO> list = adminMapper.getMenu();
+        if (!list.isEmpty()) {
+            return list;
+        } else {
+            return null;
+        }
     }
 
 }

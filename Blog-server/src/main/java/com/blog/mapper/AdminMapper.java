@@ -2,8 +2,11 @@ package com.blog.mapper;
 
 import com.blog.dto.UserPageQueryDTO;
 import com.blog.entity.User;
+import com.blog.vo.MenuVO;
 import com.github.pagehelper.Page;
 import org.apache.ibatis.annotations.Select;
+
+import java.util.List;
 
 /**
  * @Author Java小猪
@@ -34,4 +37,11 @@ public interface AdminMapper {
      */
     @Select("select *from user")
     Page<User> query(UserPageQueryDTO userPageQueryDTO);
+
+    /**
+     * 获取菜单
+     * @return
+     */
+    @Select("select *from menu")
+    List<MenuVO> getMenu();
 }

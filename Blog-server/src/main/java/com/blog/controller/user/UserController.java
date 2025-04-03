@@ -46,20 +46,20 @@ public class UserController {
         // 校验验证码
         String storedCaptcha = redisTemplate.opsForValue().get(CODE_KEY + userRegisterDTO.getEmail());
         if (storedCaptcha == null) {
-            return Result.error(CODE_PASS);
+            return Result.error(400,CODE_PASS);
         }
         if (!storedCaptcha.equals(userRegisterDTO.getCode())) {
-            return Result.error(CODE_ERROR);
+            return Result.error(400,CODE_ERROR);
         }
         // 验证码正确，继续注册
         UserVO userVO = userService.register(userRegisterDTO);
         if (userVO == null) {
-            return Result.error(ALREADY_EXISTS);
+            return Result.error(400,ALREADY_EXISTS);
         }
         log.info("注册成功：{}", userVO);
         // 注册成功后删除验证码
         redisTemplate.delete(CODE_KEY + userRegisterDTO.getEmail());
-        return Result.success(userVO, SUCCESS_REGISTER);
+        return Result.success(SUCCESS_REGISTER,userVO);
     }
 
     /**
@@ -82,7 +82,7 @@ public class UserController {
                 .token(token)
                 .build();
         log.info("当前登录用户：{}", userLoginVO);
-        return Result.success(userLoginVO, SUCCESS_LOGIN);
+        return Result.success(SUCCESS_LOGIN,userLoginVO);
     }
 
     /**

@@ -8,12 +8,15 @@ import com.blog.result.PageResult;
 import com.blog.result.Result;
 import com.blog.service.AdminService;
 import com.blog.utils.JwtUtil;
+import com.blog.vo.MenuVO;
 import com.blog.vo.UserLoginVO;
+import com.blog.vo.UserVO;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static com.blog.constant.Constant.*;
@@ -39,13 +42,13 @@ public class AdminController {
      * @return
      */
     @GetMapping("/{username}")
-    public Result<User> getByName(@PathVariable("username") String username) {
-        User user = adminService.getByName(username);
-        if (user == null) {
-            return Result.error(USER_NOT_FOUND);
-        }
-        log.info("查询到的用户为：{}", user);
-        return Result.success(user);
+    public Result<UserVO> getByName(@PathVariable("username") String username) {
+        UserVO userVO = adminService.getByName(username);
+//        if (user == null) {
+//            return Result.error(404,USER_NOT_FOUND);
+//        }
+        log.info("查询到的用户为：{}", userVO);
+        return Result.success(userVO);
     }
 
     /**
@@ -67,7 +70,7 @@ public class AdminController {
                 .token(token)
                 .build();
         log.info("当前登录用户：{}", userLoginVO);
-        return Result.success(userLoginVO, SUCCESS_LOGIN);
+        return Result.success(SUCCESS_LOGIN,userLoginVO);
     }
 
     /**
@@ -89,5 +92,15 @@ public class AdminController {
     public Result<PageResult> pageQuery(@RequestBody UserPageQueryDTO userPageQueryDTO) {
         PageResult pageResult = adminService.query(userPageQueryDTO);
         return Result.success(pageResult);
+    }
+
+    /**
+     * 获取菜单
+     * @return
+     */
+    @GetMapping("/menu")
+    public Result<List<MenuVO>> getMenu(){
+        List<MenuVO> list = adminService.getMenu();
+        return Result.success(list);
     }
 }

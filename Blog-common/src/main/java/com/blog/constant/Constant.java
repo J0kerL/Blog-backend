@@ -33,5 +33,6 @@ public class Constant {
     public static final String CODE_PASS = "验证码已过期";
     public static final String CODE_ERROR = "验证码错误";
     public static final String NOT_HAVE_POWER = "没有权限";
+    public static final String MESSAGE = "token错误";
 
 }

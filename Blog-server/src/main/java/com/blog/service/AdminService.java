@@ -4,6 +4,10 @@ import com.blog.dto.UserLoginDTO;
 import com.blog.dto.UserPageQueryDTO;
 import com.blog.entity.User;
 import com.blog.result.PageResult;
+import com.blog.vo.MenuVO;
+import com.blog.vo.UserVO;
+
+import java.util.List;
 
 /**
  * @Author Java小猪
@@ -16,7 +20,7 @@ public interface AdminService {
      * @param username
      * @return
      */
-    User getByName(String username);
+    UserVO getByName(String username);
 
     /**
      * 登录
@@ -31,4 +35,10 @@ public interface AdminService {
      * @return
      */
     PageResult query(UserPageQueryDTO userPageQueryDTO);
+
+    /**
+     * 获取菜单
+     * @return
+     */
+    List<MenuVO> getMenu();
 }

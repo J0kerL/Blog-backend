@@ -13,6 +13,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
+import static com.blog.constant.Constant.MESSAGE;
+
 /**
  * @Author Java小猪
  * @Date 2025/3/26 10:16
@@ -49,6 +51,9 @@ public class JwtTokenInterceptor implements HandlerInterceptor {
         } catch (Exception ex) {
             //4、不通过，响应401状态码
             response.setStatus(401);
+            response.setContentType("application/json;charset=utf-8");
+            response.getWriter().write(MESSAGE);
+            log.error(MESSAGE, ex.getMessage());
             return false;
         }
     }
