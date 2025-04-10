@@ -1,5 +1,6 @@
 package com.blog.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -9,6 +10,7 @@ import java.io.Serializable;
  * @Date 2025/4/1 17:59
  */
 @Data
+@Schema(description = "用户分页查询")
 public class UserPageQueryDTO implements Serializable {
 
     // 员工姓名

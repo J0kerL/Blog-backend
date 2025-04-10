@@ -70,10 +70,35 @@ blog:
     # 设置jwt过期时间 2小时
     ttl: 7200000
     # 设置前端传递过来的令牌名称
-    token-name: token
+    token-name: Authorization
   aliyun:
     oss:
       endpoint: ${blog.alioss.endpoint}
       access-key-id: ${blog.alioss.access-key-id}
       access-key-secret: ${blog.alioss.access-key-secret}
       bucket-name: ${blog.alioss.bucket-name}
+# springdoc-openapi配置
+springdoc:
+  # Swagger原生UI的配置(Knife4j增强UI通过/doc.html访问)
+  swagger-ui:
+    # 原生Swagger UI的访问路径
+    path: /swagger-ui.html
+    # API 标签按字母顺序排序(可选：alpha-字母序，method-方法名)
+    tags-sorter: alpha
+    # 接口方法按字母顺序排序(可选：alpha, method)
+    operations-sorter: alpha
+  # OpenAPI 规范文档的生成配置
+  api-docs:
+    # OpenAPI 规范 JSON 数据的访问路径(默认值)
+    path: /v3/api-docs
+    # 开启文档功能
+    enabled: true
+# Knife4j增强功能配置
+knife4j:
+  # 是否启用 Knife4j
+  enable: true
+  setting:
+    # 设置界面语言为中文
+    language: zh_cn
+    # 重命名SwaggerModel名称,默认为Swagger Models
+    swagger-model-name: 实体列表

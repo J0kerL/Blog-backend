@@ -12,6 +12,8 @@ import com.blog.utils.JwtUtil;
 import com.blog.vo.MenuVO;
 import com.blog.vo.UserLoginVO;
 import com.blog.vo.UserVO;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -30,6 +32,7 @@ import static com.blog.constant.Constant.*;
 @RestController
 @RequestMapping("/user")
 @Slf4j
+@Tag(name = "用户相关接口")
 public class UserController {
 
     @Resource
@@ -46,6 +49,7 @@ public class UserController {
      * @param username
      * @return
      */
+    @Operation(summary = "根据用户名查询用户信息")
     @GetMapping("/{username}")
     public Result<UserVO> getByName(@PathVariable("username") String username) {
         UserVO userVO = userService.getByName(username);
@@ -59,6 +63,7 @@ public class UserController {
      * @param userRegisterDTO
      * @return
      */
+    @Operation(summary = "注册")
     @PostMapping("/register")
     public Result<UserVO> register(@RequestBody UserRegisterDTO userRegisterDTO) {
         // 校验验证码
@@ -86,6 +91,7 @@ public class UserController {
      * @param userLoginDTO
      * @return
      */
+    @Operation(summary = "登录")
     @PostMapping("/login")
     public Result<UserLoginVO> login(@RequestBody UserLoginDTO userLoginDTO) {
         User user = userService.login(userLoginDTO);
@@ -108,8 +114,11 @@ public class UserController {
      *
      * @return
      */
+    @Operation(summary = "退出登录")
     @PostMapping("/logout")
     public Result<String> logout() {
+        // 清理用户上下文，已在拦截器的afterCompletion方法中自动清理
+        log.info("用户退出登录");
         return Result.success(ALREADY_EXIT);
     }
 
@@ -119,6 +128,7 @@ public class UserController {
      * @param email
      * @return
      */
+    @Operation(summary = "发送验证码")
     @GetMapping("/captcha")
     public Result<String> sendCaptcha(@RequestParam String email) {
         String code = userService.sendCaptchaEmail(email);
@@ -130,6 +140,7 @@ public class UserController {
      * @param userPageQueryDTO
      * @return
      */
+    @Operation(summary = "用户分页查询")
     @GetMapping("/page")
     public Result<PageResult> pageQuery(UserPageQueryDTO userPageQueryDTO) {
         PageResult pageResult = userService.query(userPageQueryDTO);
@@ -140,6 +151,7 @@ public class UserController {
      * 获取菜单
      * @return
      */
+    @Operation(summary = "获取菜单")
     @GetMapping("/menu")
     public Result<List<MenuVO>> getMenu(){
         List<MenuVO> list = userService.getMenu();
@@ -147,5 +159,5 @@ public class UserController {
     }
 
     // TODO 根据用户名查询用户时 参数为中文查询不了
-    // TODO 退出登录 进行token删除
+    // 退出登录功能已实现，通过拦截器afterCompletion方法清理ThreadLocal
 }

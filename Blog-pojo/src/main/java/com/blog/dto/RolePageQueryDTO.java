@@ -1,5 +1,6 @@
 package com.blog.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,6 +12,7 @@ import java.io.Serializable;
  * @Date 2025/4/3 15:55
  */
 @Data
+@Schema(description = "角色分页查询")
 @AllArgsConstructor
 @NoArgsConstructor
 public class RolePageQueryDTO implements Serializable {
