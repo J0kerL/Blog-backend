@@ -183,4 +183,17 @@ public class UserController {
         userService.updateUser(userDTO);
         return Result.success(OPERATE_SUCCESS);
     }
+
+    /**
+     * 根据id批量删除用户
+     *
+     * @param ids
+     * @return
+     */
+    @DeleteMapping("/delete/{ids}")
+    @Operation(summary = "根据id批量删除用户")
+    public Result<String> deleteByIds(@PathVariable("ids") List<Integer> ids) {
+        userService.deleteByIds(ids);
+        return Result.success(OPERATE_SUCCESS);
+    }
 }

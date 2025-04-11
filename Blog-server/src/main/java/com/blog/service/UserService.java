@@ -66,4 +66,10 @@ public interface UserService {
      * @param userDTO
      */
     void updateUser(UserDTO userDTO);
+
+    /**
+     * 根据id批量删除用户
+     * @param ids
+     */
+    void deleteByIds(List<Integer> ids);
 }

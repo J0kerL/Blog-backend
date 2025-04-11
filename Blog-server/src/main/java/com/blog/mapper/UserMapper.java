@@ -76,4 +76,10 @@ public interface UserMapper {
      */
     @Select("select username from user where id = #{id}")
     User getById(Integer id);
+
+    /**
+     * 根据id批量删除用户
+     * @param ids
+     */
+    void deleteByIds(List<Integer> ids);
 }

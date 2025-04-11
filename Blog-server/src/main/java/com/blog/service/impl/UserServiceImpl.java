@@ -224,5 +224,14 @@ public class UserServiceImpl implements UserService {
         }
         userMapper.updateUser(userDTO);
     }
+
+    /**
+     * 根据id批量删除用户
+     * @param ids
+     */
+    @Override
+    public void deleteByIds(List<Integer> ids) {
+        userMapper.deleteByIds(ids);
+    }
 }
 

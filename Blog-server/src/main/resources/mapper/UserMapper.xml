@@ -45,4 +45,11 @@
         </set>
         where id = #{id}
     </update>
+
+    <delete id="deleteByIds">
+        delete from user where id in
+        <foreach collection="ids" open="(" close=")" separator="," item="id">
+            #{id}
+        </foreach>
+    </delete>
 </mapper>
