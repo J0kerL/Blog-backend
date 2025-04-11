@@ -1,6 +1,7 @@
 package com.blog.mapper;
 
 import com.blog.dto.UserPageQueryDTO;
+import com.blog.dto.UserRegisterDTO;
 import com.blog.entity.User;
 import com.blog.vo.MenuVO;
 import com.github.pagehelper.Page;
@@ -33,13 +34,11 @@ public interface UserMapper {
 
     /**
      * 注册
-     * @param username
-     * @param password
-     * @param email
+     * @param userRegisterDTO
      * @return
      */
     @Insert("insert into user (username,password,email) values (#{username},#{password},#{email})")
-    void register(String username, String password,String email);
+    void register(UserRegisterDTO userRegisterDTO);
 
     /**
      * 用户分页查询
@@ -54,4 +53,12 @@ public interface UserMapper {
      */
     @Select("select *from menu")
     List<MenuVO> getMenu();
+
+    /**
+     * 新增用户
+     * @param user
+     */
+    @Insert("insert into user (username, password, status, avatar, email, sex, roleId) VALUES" +
+            "(#{username},#{password},#{status},#{avatar},#{email},#{sex},#{roleId})")
+    void addUser(User user);
 }

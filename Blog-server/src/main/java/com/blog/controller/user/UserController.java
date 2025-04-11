@@ -1,5 +1,6 @@
 package com.blog.controller.user;
 
+import com.blog.dto.AddUserDTO;
 import com.blog.dto.UserLoginDTO;
 import com.blog.dto.UserPageQueryDTO;
 import com.blog.dto.UserRegisterDTO;
@@ -158,6 +159,15 @@ public class UserController {
         return Result.success(list);
     }
 
-    // TODO 根据用户名查询用户时 参数为中文查询不了
-    // 退出登录功能已实现，通过拦截器afterCompletion方法清理ThreadLocal
+    /**
+     * 新增用户
+     * @param addUserDTO
+     * @return
+     */
+    @PostMapping("/add")
+    @Operation(summary = "新增用户")
+    public Result<String> addUser(@RequestBody AddUserDTO addUserDTO) {
+        userService.addUser(addUserDTO);
+        return Result.success(OPERATE_SUCCESS);
+    }
 }

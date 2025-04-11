@@ -1,12 +1,16 @@
 package com.blog.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
+import com.blog.dto.AddUserDTO;
 import com.blog.dto.UserLoginDTO;
 import com.blog.dto.UserPageQueryDTO;
 import com.blog.dto.UserRegisterDTO;
 import com.blog.entity.User;
+import com.blog.exception.AccountAlreadyExistException;
 import com.blog.exception.AccountLockedException;
 import com.blog.exception.AccountNotFoundException;
 import com.blog.exception.PasswordErrorException;
+import com.blog.mapper.RoleMapper;
 import com.blog.mapper.UserMapper;
 import com.blog.result.PageResult;
 import com.blog.service.UserService;
@@ -41,9 +45,10 @@ public class UserServiceImpl implements UserService {
     @Resource
     private JavaMailSender mailSender;
     @Resource
+    private RoleMapper roleMapper;
+    @Resource
     private RedisTemplate<String, Object> redisTemplate;
 
-    public static final String AVATAR_URL = "https://diamond-blog.oss-cn-beijing.aliyuncs.com/defaultAvatar.jpg";
 
     @Value("${spring.mail.username}")
     public String emailAddress;
@@ -66,7 +71,8 @@ public class UserServiceImpl implements UserService {
                 .status(user.getStatus())
                 .avatar(user.getAvatar())
                 .email(user.getEmail())
-                .role(user.getRole())
+                .sex(user.getSex())
+                .roleId(user.getRoleId())
                 .build();
     }
 
@@ -85,15 +91,16 @@ public class UserServiceImpl implements UserService {
             return null;
         }
         // 不存在 注册
-        userMapper.register(userRegisterDTO.getUsername(), userRegisterDTO.getPassword(), userRegisterDTO.getEmail());
+        userMapper.register(userRegisterDTO);
         // 不返回明文密码
         return UserVO.builder()
                 .username(userRegisterDTO.getUsername())
                 .password("******")
-                .status(1)
+                .status(ENABLE)
                 .avatar(AVATAR_URL)
                 .email(userRegisterDTO.getEmail())
-                .role(1)
+                .sex(MAN)
+                .roleId(NORMAL_USER)
                 .build();
     }
 
@@ -182,9 +189,31 @@ public class UserServiceImpl implements UserService {
         List<MenuVO> list = userMapper.getMenu();
         if (!list.isEmpty()) {
             return list;
-        } else {
+        }else {
             return null;
         }
+    }
+
+    /**
+     * 新增用户
+     * @param addUserDTO
+     */
+    @Override
+    public void addUser(AddUserDTO addUserDTO) {
+        // 判断用户是否存在
+        // 存在 返回异常信息
+        if (userMapper.getByName(addUserDTO.getUsername()) != null) {
+            throw new AccountAlreadyExistException(ALREADY_EXISTS);
+        }
+        // 不存在 进行新增操作
+        User user = new User();
+        BeanUtil.copyProperties(addUserDTO, user);
+        user.setStatus(ENABLE);
+        user.setAvatar(AVATAR_URL);
+        user.setEmail(null);
+        user.setSex(MAN);
+        user.setRoleId(NORMAL_USER);
+        userMapper.addUser(user);
     }
 }
 

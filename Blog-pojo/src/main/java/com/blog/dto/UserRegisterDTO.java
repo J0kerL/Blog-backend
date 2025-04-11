@@ -16,6 +16,7 @@ public class UserRegisterDTO implements Serializable {
     private String username;
     private String password;
     private String email;
+    // 验证码
     private String code;
 
 }

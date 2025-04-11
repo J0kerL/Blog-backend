@@ -1,8 +1,6 @@
 package com.blog.service;
 
-import com.blog.dto.UserLoginDTO;
-import com.blog.dto.UserPageQueryDTO;
-import com.blog.dto.UserRegisterDTO;
+import com.blog.dto.*;
 import com.blog.entity.User;
 import com.blog.result.PageResult;
 import com.blog.vo.MenuVO;
@@ -56,4 +54,10 @@ public interface UserService {
      * @return
      */
     List<MenuVO> getMenu();
+
+    /**
+     * 新增用户
+     * @param addUserDTO
+     */
+    void addUser(AddUserDTO addUserDTO);
 }

@@ -16,6 +16,7 @@ public class UserVO {
     private Integer status;
     private String avatar;
     private String email;
-    private Integer role;
+    private Integer sex;
+    private Integer roleId;
 
 }

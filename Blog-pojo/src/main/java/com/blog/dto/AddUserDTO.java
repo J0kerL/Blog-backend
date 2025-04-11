@@ -7,15 +7,13 @@ import java.io.Serializable;
 
 /**
  * @Author Java小猪
- * @Date 2025/3/24 17:00
+ * @Date 2025/4/11 11:06
  */
 @Data
-@Schema(description = "用户")
-public class UserDTO implements Serializable {
+@Schema(description = "新增用户")
+public class AddUserDTO implements Serializable {
 
-    private Integer id;
     private String username;
     private String password;
-    private String email;
 
 }

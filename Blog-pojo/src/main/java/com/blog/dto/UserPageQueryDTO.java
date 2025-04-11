@@ -16,6 +16,9 @@ public class UserPageQueryDTO implements Serializable {
     // 员工姓名
     private String username;
 
+    // 性别
+    private Integer sex;
+
     // 账号状态
     private Integer status;
 

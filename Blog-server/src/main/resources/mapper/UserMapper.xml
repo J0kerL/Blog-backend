@@ -8,6 +8,9 @@
             <if test="username != null and username != ''">
                 and username like concat('%',#{username},'%')
             </if>
+            <if test="sex != null">
+                and sex = #{sex}
+            </if>
             <if test="status != null">
                 and status = #{status}
             </if>

@@ -11,6 +11,7 @@ import com.github.pagehelper.Page;
 public interface RoleMapper {
     /**
      * 角色分页查询
+     *
      * @param rolePageQueryDTO
      * @return
      */

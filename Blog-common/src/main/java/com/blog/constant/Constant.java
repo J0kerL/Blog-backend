@@ -9,12 +9,20 @@ public class Constant {
 
     // 正常
     public static final Integer ENABLE = 1;
-    // 普通用户
-    public static final Integer NORMAL_USER = 1;
     // 禁用
     public static final Integer DISABLE = 0;
+    // 男
+    public static final Integer MAN = 0;
+    // 女
+    public static final Integer WOMAN = 1;
+    // 沃尔玛购物袋
+    public static final Integer MIDDLE = 2;
+    // 普通用户
+    public static final Integer NORMAL_USER = 2;
     // 管理员
-    public static final Integer SUPER_USER = 0;
+    public static final Integer SUPER_USER = 1;
+    // 演示账号
+    public static final Integer DEMO_ACCOUNT = 3;
     public static final String ALREADY_EXISTS = "用户已存在";
     public static final String USER_NOT_FOUND = "用户不存在";
     public static final String PASSWORD_ERROR = "密码错误";
@@ -35,5 +43,8 @@ public class Constant {
     public static final String NOT_HAVE_POWER = "没有权限";
     public static final String TOKEN_ERROR = "token错误";
     public static final String TOKEN_IS_NULL = "JWT令牌为空，请求被拒绝";
+    public static final String OPERATE_SUCCESS = "操作成功";
+    public static final String AVATAR_URL = "https://diamond-blog.oss-cn-beijing.aliyuncs.com/defaultAvatar.jpg";
+
 
 }

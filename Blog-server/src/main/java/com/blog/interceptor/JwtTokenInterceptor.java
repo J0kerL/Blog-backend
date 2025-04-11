@@ -60,6 +60,7 @@ public class JwtTokenInterceptor implements HandlerInterceptor {
         } catch (Exception ex) {
             //4、不通过，响应401状态码
             response.setStatus(401);
+            response.setContentType("application/json;charset=utf-8");
             response.getWriter().write(TOKEN_ERROR);
             log.error("token验证失败:{}", ex.getMessage());
             return false;
