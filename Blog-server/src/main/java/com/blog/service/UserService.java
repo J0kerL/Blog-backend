@@ -60,4 +60,10 @@ public interface UserService {
      * @param addUserDTO
      */
     void addUser(AddUserDTO addUserDTO);
+
+    /**
+     * 修改用户
+     * @param userDTO
+     */
+    void updateUser(UserDTO userDTO);
 }

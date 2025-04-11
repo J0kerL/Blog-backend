@@ -1,5 +1,6 @@
 package com.blog.mapper;
 
+import com.blog.dto.UserDTO;
 import com.blog.dto.UserPageQueryDTO;
 import com.blog.dto.UserRegisterDTO;
 import com.blog.entity.User;
@@ -61,4 +62,18 @@ public interface UserMapper {
     @Insert("insert into user (username, password, status, avatar, email, sex, roleId) VALUES" +
             "(#{username},#{password},#{status},#{avatar},#{email},#{sex},#{roleId})")
     void addUser(User user);
+
+    /**
+     * 修改用户
+     * @param userDTO
+     */
+    void updateUser(UserDTO userDTO);
+
+    /**
+     * 根据id查找用户
+     * @param id
+     * @return
+     */
+    @Select("select username from user where id = #{id}")
+    User getById(Integer id);
 }

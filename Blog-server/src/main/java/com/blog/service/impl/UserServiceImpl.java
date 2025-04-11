@@ -1,10 +1,7 @@
 package com.blog.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
-import com.blog.dto.AddUserDTO;
-import com.blog.dto.UserLoginDTO;
-import com.blog.dto.UserPageQueryDTO;
-import com.blog.dto.UserRegisterDTO;
+import com.blog.dto.*;
 import com.blog.entity.User;
 import com.blog.exception.AccountAlreadyExistException;
 import com.blog.exception.AccountLockedException;
@@ -214,6 +211,18 @@ public class UserServiceImpl implements UserService {
         user.setSex(MAN);
         user.setRoleId(NORMAL_USER);
         userMapper.addUser(user);
+    }
+
+    /**
+     * 修改用户
+     * @param userDTO
+     */
+    @Override
+    public void updateUser(UserDTO userDTO) {
+        if (userMapper.getById(userDTO.getId()) == null){
+            throw new AccountNotFoundException(USER_NOT_FOUND);
+        }
+        userMapper.updateUser(userDTO);
     }
 }
 

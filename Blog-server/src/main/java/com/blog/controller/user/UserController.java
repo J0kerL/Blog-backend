@@ -1,9 +1,6 @@
 package com.blog.controller.user;
 
-import com.blog.dto.AddUserDTO;
-import com.blog.dto.UserLoginDTO;
-import com.blog.dto.UserPageQueryDTO;
-import com.blog.dto.UserRegisterDTO;
+import com.blog.dto.*;
 import com.blog.entity.User;
 import com.blog.properties.JwtProperties;
 import com.blog.result.PageResult;
@@ -70,20 +67,20 @@ public class UserController {
         // 校验验证码
         String storedCaptcha = redisTemplate.opsForValue().get(CODE_KEY + userRegisterDTO.getEmail());
         if (storedCaptcha == null) {
-            return Result.error(400,CODE_PASS);
+            return Result.error(400, CODE_PASS);
         }
         if (!storedCaptcha.equals(userRegisterDTO.getCode())) {
-            return Result.error(400,CODE_ERROR);
+            return Result.error(400, CODE_ERROR);
         }
         // 验证码正确，继续注册
         UserVO userVO = userService.register(userRegisterDTO);
         if (userVO == null) {
-            return Result.error(400,ALREADY_EXISTS);
+            return Result.error(400, ALREADY_EXISTS);
         }
         log.info("注册成功：{}", userVO);
         // 注册成功后删除验证码
         redisTemplate.delete(CODE_KEY + userRegisterDTO.getEmail());
-        return Result.success(SUCCESS_REGISTER,userVO);
+        return Result.success(SUCCESS_REGISTER, userVO);
     }
 
     /**
@@ -107,7 +104,7 @@ public class UserController {
                 .token(token)
                 .build();
         log.info("当前登录用户：{}", userLoginVO);
-        return Result.success(SUCCESS_LOGIN,userLoginVO);
+        return Result.success(SUCCESS_LOGIN, userLoginVO);
     }
 
     /**
@@ -138,6 +135,7 @@ public class UserController {
 
     /**
      * 用户分页查询
+     *
      * @param userPageQueryDTO
      * @return
      */
@@ -150,17 +148,19 @@ public class UserController {
 
     /**
      * 获取菜单
+     *
      * @return
      */
     @Operation(summary = "获取菜单")
     @GetMapping("/menu")
-    public Result<List<MenuVO>> getMenu(){
+    public Result<List<MenuVO>> getMenu() {
         List<MenuVO> list = userService.getMenu();
         return Result.success(list);
     }
 
     /**
      * 新增用户
+     *
      * @param addUserDTO
      * @return
      */
@@ -168,6 +168,19 @@ public class UserController {
     @Operation(summary = "新增用户")
     public Result<String> addUser(@RequestBody AddUserDTO addUserDTO) {
         userService.addUser(addUserDTO);
+        return Result.success(OPERATE_SUCCESS);
+    }
+
+    /**
+     * 修改用户
+     *
+     * @param userDTO
+     * @return
+     */
+    @PutMapping("/update")
+    @Operation(summary = "修改用户")
+    public Result<String> updateUser(@RequestBody UserDTO userDTO) {
+        userService.updateUser(userDTO);
         return Result.success(OPERATE_SUCCESS);
     }
 }
