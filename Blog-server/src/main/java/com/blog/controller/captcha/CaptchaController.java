@@ -1,4 +1,4 @@
-package com.blog.controller.Captcha;
+package com.blog.controller.captcha;
 
 import com.blog.result.Result;
 import com.blog.service.CaptchaService;
