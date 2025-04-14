@@ -36,13 +36,6 @@ public interface UserService {
     User login(UserLoginDTO userLoginDTO);
 
     /**
-     * 发送验证码
-     * @param email
-     * @return
-     */
-    String sendCaptchaEmail(String email);
-
-    /**
      * 用户分页查询
      * @param userPageQueryDTO
      * @return

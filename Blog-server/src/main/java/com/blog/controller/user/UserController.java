@@ -121,19 +121,6 @@ public class UserController {
     }
 
     /**
-     * 发送验证码
-     *
-     * @param email
-     * @return
-     */
-    @Operation(summary = "发送验证码")
-    @GetMapping("/captcha")
-    public Result<String> sendCaptcha(@RequestParam String email) {
-        String code = userService.sendCaptchaEmail(email);
-        return Result.success(code);
-    }
-
-    /**
      * 用户分页查询
      *
      * @param userPageQueryDTO

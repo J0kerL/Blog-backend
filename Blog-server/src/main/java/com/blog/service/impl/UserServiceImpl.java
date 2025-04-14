@@ -7,25 +7,18 @@ import com.blog.exception.AccountAlreadyExistException;
 import com.blog.exception.AccountLockedException;
 import com.blog.exception.AccountNotFoundException;
 import com.blog.exception.PasswordErrorException;
-import com.blog.mapper.RoleMapper;
 import com.blog.mapper.UserMapper;
 import com.blog.result.PageResult;
 import com.blog.service.UserService;
-import com.blog.utils.CaptchaUtil;
 import com.blog.vo.MenuVO;
 import com.blog.vo.UserVO;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import static com.blog.constant.Constant.*;
 
@@ -39,16 +32,6 @@ public class UserServiceImpl implements UserService {
 
     @Resource
     private UserMapper userMapper;
-    @Resource
-    private JavaMailSender mailSender;
-    @Resource
-    private RoleMapper roleMapper;
-    @Resource
-    private RedisTemplate<String, Object> redisTemplate;
-
-
-    @Value("${spring.mail.username}")
-    public String emailAddress;
 
     /**
      * 根据用户名查询用户信息
@@ -131,31 +114,6 @@ public class UserServiceImpl implements UserService {
         }
         //3、返回实体对象
         return user;
-    }
-
-    /**
-     * 发送验证码
-     *
-     * @param email
-     * @return
-     */
-    @Override
-    public String sendCaptchaEmail(String email) {
-        // 生成验证码
-        String captcha = CaptchaUtil.generateCaptcha();
-        // 存储到 Redis，设置 5 分钟过期
-        redisTemplate.opsForValue().set(CODE_KEY + email, captcha, 5, TimeUnit.MINUTES);
-        // 发送邮件
-        SimpleMailMessage message = new SimpleMailMessage();
-        // 发件人
-        message.setFrom(emailAddress);
-        // 收件人
-        message.setTo(email);
-        message.setSubject(CODE);
-        message.setText(YOUR_CODE + captcha + EXPIRATION_DATE);
-        mailSender.send(message);
-        log.info("验证码为：{}", redisTemplate.opsForValue().get(CODE_KEY + email));
-        return message.getText();
     }
 
     /**
