@@ -7,7 +7,6 @@ import com.blog.result.PageResult;
 import com.blog.result.Result;
 import com.blog.service.UserService;
 import com.blog.utils.JwtUtil;
-import com.blog.vo.MenuVO;
 import com.blog.vo.UserLoginVO;
 import com.blog.vo.UserVO;
 import io.swagger.v3.oas.annotations.Operation;
@@ -131,18 +130,6 @@ public class UserController {
     public Result<PageResult> pageQuery(UserPageQueryDTO userPageQueryDTO) {
         PageResult pageResult = userService.query(userPageQueryDTO);
         return Result.success(pageResult);
-    }
-
-    /**
-     * 获取菜单
-     *
-     * @return
-     */
-    @Operation(summary = "获取菜单")
-    @GetMapping("/menu")
-    public Result<List<MenuVO>> getMenu() {
-        List<MenuVO> list = userService.getMenu();
-        return Result.success(list);
     }
 
     /**

@@ -10,7 +10,6 @@ import com.blog.exception.PasswordErrorException;
 import com.blog.mapper.UserMapper;
 import com.blog.result.PageResult;
 import com.blog.service.UserService;
-import com.blog.vo.MenuVO;
 import com.blog.vo.UserVO;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
@@ -132,21 +131,6 @@ public class UserServiceImpl implements UserService {
             user.setPassword("******");
         });
         return new PageResult(total, list);
-    }
-
-    /**
-     * 获取菜单
-     *
-     * @return
-     */
-    @Override
-    public List<MenuVO> getMenu() {
-        List<MenuVO> list = userMapper.getMenu();
-        if (!list.isEmpty()) {
-            return list;
-        }else {
-            return null;
-        }
     }
 
     /**

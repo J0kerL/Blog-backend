@@ -4,7 +4,6 @@ import com.blog.dto.UserDTO;
 import com.blog.dto.UserPageQueryDTO;
 import com.blog.dto.UserRegisterDTO;
 import com.blog.entity.User;
-import com.blog.vo.MenuVO;
 import com.github.pagehelper.Page;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Select;
@@ -47,13 +46,6 @@ public interface UserMapper {
      * @return
      */
     Page<User> query(UserPageQueryDTO userPageQueryDTO);
-
-    /**
-     * 获取菜单
-     * @return
-     */
-    @Select("select *from menu")
-    List<MenuVO> getMenu();
 
     /**
      * 新增用户

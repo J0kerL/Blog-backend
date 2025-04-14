@@ -3,7 +3,6 @@ package com.blog.service;
 import com.blog.dto.*;
 import com.blog.entity.User;
 import com.blog.result.PageResult;
-import com.blog.vo.MenuVO;
 import com.blog.vo.UserVO;
 
 import java.util.List;
@@ -41,12 +40,6 @@ public interface UserService {
      * @return
      */
     PageResult query(UserPageQueryDTO userPageQueryDTO);
-
-    /**
-     * 获取菜单
-     * @return
-     */
-    List<MenuVO> getMenu();
 
     /**
      * 新增用户
