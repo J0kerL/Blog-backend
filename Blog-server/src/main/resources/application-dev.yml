@@ -8,10 +8,10 @@ blog:
     password: 1234
   data:
     redis:
-      host: 192.168.132.129
+      host: 192.168.227.133
       port: 6379
       password: 1234
-      database: 2
+      database: 4
   alioss:
     endpoint: oss-cn-beijing.aliyuncs.com
     access-key-id: LTAI5tM55aiju7WQD99sgegg

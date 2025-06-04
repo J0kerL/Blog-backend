@@ -30,6 +30,7 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
                 .excludePathPatterns(
                         "/**/login",
                         "/**/register",
+                        "/captcha/**",
                         // Knife4j 文档路径
                         "/doc.html",
                         "/swagger-ui/**",

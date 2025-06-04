@@ -12,17 +12,17 @@ public class Constant {
     // 禁用
     public static final Integer DISABLE = 0;
     // 男
-    public static final Integer MAN = 0;
+    public static final Integer MAN = 1;
     // 女
-    public static final Integer WOMAN = 1;
+    public static final Integer WOMAN = 2;
     // 沃尔玛购物袋
-    public static final Integer MIDDLE = 2;
+    public static final Integer MIDDLE = 0;
     // 普通用户
-    public static final Integer NORMAL_USER = 2;
+    public static final Integer NORMAL_USER = 3;
+    // 超级管理员
+    public static final Integer SUPER_ADMIN = 1;
     // 管理员
-    public static final Integer SUPER_USER = 1;
-    // 演示账号
-    public static final Integer DEMO_ACCOUNT = 3;
+    public static final Integer ADMIN = 2;
     public static final String ALREADY_EXISTS = "用户已存在";
     public static final String USER_NOT_FOUND = "用户不存在";
     public static final String PASSWORD_ERROR = "密码错误";
