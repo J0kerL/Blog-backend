@@ -12,7 +12,11 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import static com.blog.constant.Constant.OPERATE_SUCCESS;
 
 /**
  * @author Diamond
@@ -26,35 +30,38 @@ public class ArticleController {
     @Resource
     private ArticleService articleService;
 
-    @PostMapping
+    @PostMapping("/add")
     @Operation(summary = "新增文章")
-    public Result<Void> add(@RequestBody ArticleAddDTO articleAddDTO) {
+    public Result<String> add(@RequestBody ArticleAddDTO articleAddDTO) {
         articleService.add(articleAddDTO);
-        return Result.success();
+        return Result.success(OPERATE_SUCCESS);
     }
 
-    @PutMapping
+    @PutMapping("/update")
     @Operation(summary = "更新文章")
-    public Result<Void> update(@RequestBody ArticleUpdateDTO articleUpdateDTO) {
+    public Result<String> update(@RequestBody ArticleUpdateDTO articleUpdateDTO) {
         articleService.update(articleUpdateDTO);
-        return Result.success();
+        return Result.success(OPERATE_SUCCESS);
     }
 
-    @DeleteMapping("/{id}")
+    /*@DeleteMapping("/del/{id}")
     @Operation(summary = "根据ID删除文章")
-    public Result<Void> deleteById(@PathVariable Integer id) {
+    public Result<String> deleteById(@PathVariable Integer id) {
         articleService.deleteById(id);
-        return Result.success();
-    }
+        return Result.success(OPERATE_SUCCESS);
+    }*/
 
-    @DeleteMapping("/batch")
+    @DeleteMapping("/delete")
     @Operation(summary = "批量删除文章")
-    public Result<Void> batchDelete(@RequestBody List<Integer> ids) {
-        articleService.batchDelete(ids);
-        return Result.success();
+    public Result<String> batchDelete(@RequestParam("ids") String ids) {
+        List<Integer> idList = Arrays.stream(ids.split(","))
+                .map(Integer::parseInt)
+                .collect(Collectors.toList());
+        articleService.batchDelete(idList);
+        return Result.success(OPERATE_SUCCESS);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/get/{id}")
     @Operation(summary = "获取文章详情")
     public Result<ArticleVO> getById(@PathVariable Integer id) {
         ArticleVO articleVO = articleService.getById(id);

@@ -8,8 +8,6 @@
         <result column="category_id" property="categoryId"/>
         <result column="author_id" property="authorId"/>
         <result column="status" property="status"/>
-        <result column="create_time" property="createTime"/>
-        <result column="update_time" property="updateTime"/>
     </resultMap>
 
     <!-- 新增文章 -->
@@ -20,22 +18,29 @@
 
     <!-- 更新文章 -->
     <update id="update">
-        UPDATE article
-        <set>
-            <if test="title != null">
-                title = #{title},
-            </if>
-            <if test="content != null">
-                content = #{content},
-            </if>
-            <if test="categoryId != null">
-                category_id = #{categoryId},
-            </if>
-            <if test="status != null">
-                status = #{status},
-            </if>
-        </set>
-        WHERE id = #{id}
+        <choose>
+            <when test="title != null or content != null or categoryId != null or status != null">
+                UPDATE article
+                <set>
+                    <if test="title != null">
+                        title = #{title},
+                    </if>
+                    <if test="content != null">
+                        content = #{content},
+                    </if>
+                    <if test="categoryId != null">
+                        category_id = #{categoryId},
+                    </if>
+                    <if test="status != null">
+                        status = #{status},
+                    </if>
+                </set>
+                WHERE id = #{id}
+            </when>
+            <otherwise>
+                UPDATE article SET id = id WHERE id = #{id}
+            </otherwise>
+        </choose>
     </update>
 
     <!-- 根据ID删除文章 -->
@@ -75,6 +80,6 @@
                 AND status = #{status}
             </if>
         </where>
-        ORDER BY create_time DESC
+        ORDER BY id DESC
     </select>
 </mapper>

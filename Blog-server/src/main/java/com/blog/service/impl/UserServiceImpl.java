@@ -16,6 +16,7 @@ import com.github.pagehelper.PageHelper;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -172,7 +173,18 @@ public class UserServiceImpl implements UserService {
      * @param ids
      */
     @Override
+    @Transactional
     public void deleteByIds(List<Integer> ids) {
+        if (ids == null || ids.isEmpty()) {
+            return;
+        }
+        // 检查所有用户是否存在
+        for (Integer id : ids) {
+            if (userMapper.getById(id) == null) {
+                throw new AccountNotFoundException(USER_NOT_FOUND);
+            }
+        }
+        // 批量删除用户
         userMapper.deleteByIds(ids);
     }
 }

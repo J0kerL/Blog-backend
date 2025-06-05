@@ -1,12 +1,13 @@
 package com.blog.service.impl;
 
-import com.blog.result.PageResult;
 import com.blog.context.UserContextHolder;
 import com.blog.dto.ArticleAddDTO;
-import com.blog.dto.ArticleUpdateDTO;
 import com.blog.dto.ArticlePageQueryDTO;
+import com.blog.dto.ArticleUpdateDTO;
 import com.blog.entity.Article;
+import com.blog.exception.ArticleNotFoundException;
 import com.blog.mapper.*;
+import com.blog.result.PageResult;
 import com.blog.service.ArticleService;
 import com.blog.vo.ArticleVO;
 import com.github.pagehelper.Page;
@@ -18,6 +19,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static com.blog.constant.Constant.ARTICLE_NOT_FOUND;
 
 /**
  * @author Diamond
@@ -65,6 +68,12 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     @Transactional
     public void update(ArticleUpdateDTO articleUpdateDTO) {
+        // 判断文章是否存在
+        if (articleMapper.selectById(articleUpdateDTO.getId()) == null) {
+            // 不存在 返回错误信息
+            throw new ArticleNotFoundException(ARTICLE_NOT_FOUND);
+        }
+        // 存在 执行更新操作
         Article article = new Article();
         BeanUtils.copyProperties(articleUpdateDTO, article);
         articleMapper.update(article);
@@ -80,12 +89,19 @@ public class ArticleServiceImpl implements ArticleService {
 
     /**
      * 根据ID删除文章
+     *
      * @param id
      */
     @Override
     @Transactional
     public void deleteById(Integer id) {
-        // 删除文章
+        // 根据id查询文章
+        Article article = articleMapper.selectById(id);
+        if (article == null) {
+            // 不存在 返回错误信息
+            throw new ArticleNotFoundException(ARTICLE_NOT_FOUND);
+        }
+        // 存在，删除文章
         articleMapper.deleteById(id);
         // 删除文章-标签关联
         articleTagMapper.deleteByArticleId(id);
@@ -95,6 +111,7 @@ public class ArticleServiceImpl implements ArticleService {
 
     /**
      * 批量删除文章
+     *
      * @param ids
      */
     @Override
@@ -102,6 +119,14 @@ public class ArticleServiceImpl implements ArticleService {
     public void batchDelete(List<Integer> ids) {
         if (ids == null || ids.isEmpty()) {
             return;
+        }
+        // 检查所有文章是否存在
+        for (Integer id : ids) {
+            Article article = articleMapper.selectById(id);
+            if (article == null) {
+                // 不存在 返回错误信息
+                throw new ArticleNotFoundException(ARTICLE_NOT_FOUND);
+            }
         }
         // 批量删除文章
         articleMapper.batchDelete(ids);
@@ -119,15 +144,19 @@ public class ArticleServiceImpl implements ArticleService {
      */
     @Override
     public ArticleVO getById(Integer id) {
+        // 根据id查询文章
         Article article = articleMapper.selectById(id);
         if (article == null) {
-            return null;
+            // 不存在 返回错误信息
+            throw new ArticleNotFoundException(ARTICLE_NOT_FOUND);
         }
+        // 存在 执行查询操作
         return convertToVO(article);
     }
 
     /**
      * 分页查询文章列表
+     *
      * @param articlePageQueryDTO
      * @return
      */

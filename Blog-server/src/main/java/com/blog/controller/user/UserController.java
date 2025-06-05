@@ -16,9 +16,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static com.blog.constant.Constant.*;
 
@@ -164,10 +166,13 @@ public class UserController {
      * @param ids
      * @return
      */
-    @DeleteMapping("/delete/{ids}")
+    @DeleteMapping("/delete")
     @Operation(summary = "根据id批量删除用户")
-    public Result<String> deleteByIds(@PathVariable("ids") List<Integer> ids) {
-        userService.deleteByIds(ids);
+    public Result<String> deleteByIds(@RequestParam("ids") String ids) {
+        List<Integer> idList = Arrays.stream(ids.split(","))
+                .map(Integer::parseInt)
+                .collect(Collectors.toList());
+        userService.deleteByIds(idList);
         return Result.success(OPERATE_SUCCESS);
     }
 }
