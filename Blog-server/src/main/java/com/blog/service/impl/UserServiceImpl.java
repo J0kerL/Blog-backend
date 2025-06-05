@@ -64,24 +64,20 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public UserVO register(UserRegisterDTO userRegisterDTO) {
-        // 根据用户名查询用户信息
-        User user = userMapper.getByName(userRegisterDTO.getUsername());
-        // 用户名已存在 不能注册
-        if (user != null) {
+        // 判断用户是否存在
+        if (userMapper.getByName(userRegisterDTO.getUsername()) != null) {
             return null;
         }
-        // 不存在 注册
-        userMapper.register(userRegisterDTO);
-        // 不返回明文密码
-        return UserVO.builder()
-                .username(userRegisterDTO.getUsername())
-                .password("******")
-                .status(ENABLE)
-                .avatar(AVATAR_URL)
-                .email(userRegisterDTO.getEmail())
-                .sex(MAN)
-                .roleId(NORMAL_USER)
-                .build();
+        // 不存在 进行新增操作
+        User user = new User();
+        BeanUtil.copyProperties(userRegisterDTO, user);
+        user.setStatus(ENABLE);
+        // 设置默认头像
+        user.setAvatar(AVATAR_URL);
+        user.setSex(MAN);
+        user.setRoleId(NORMAL_USER);
+        userMapper.addUser(user);
+        return BeanUtil.copyProperties(user, UserVO.class);
     }
 
     /**
@@ -150,7 +146,6 @@ public class UserServiceImpl implements UserService {
         BeanUtil.copyProperties(addUserDTO, user);
         user.setStatus(ENABLE);
         user.setAvatar(AVATAR_URL);
-        user.setEmail(null);
         user.setSex(MAN);
         user.setRoleId(NORMAL_USER);
         userMapper.addUser(user);
@@ -162,10 +157,19 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public void updateUser(UserDTO userDTO) {
-        if (userMapper.getById(userDTO.getId()) == null){
+        if (userMapper.getById(userDTO.getId()) == null) {
             throw new AccountNotFoundException(USER_NOT_FOUND);
         }
-        userMapper.updateUser(userDTO);
+        // 如果用户上传了新头像，则更新头像
+        if (userDTO.getAvatar() != null && !userDTO.getAvatar().equals(AVATAR_URL)) {
+            userMapper.updateUser(userDTO);
+        } else {
+            // 如果没有上传新头像，保持原头像不变
+            UserDTO updateDTO = new UserDTO();
+            BeanUtil.copyProperties(userDTO, updateDTO);
+            updateDTO.setAvatar(null);
+            userMapper.updateUser(updateDTO);
+        }
     }
 
     /**

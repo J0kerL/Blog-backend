@@ -46,5 +46,6 @@ public class Constant {
     public static final String OPERATE_SUCCESS = "操作成功";
     public static final String AVATAR_URL = "https://diamond-blog.oss-cn-beijing.aliyuncs.com/defaultAvatar.jpg";
     public static final String ARTICLE_NOT_FOUND = "文章不存在";
+    public static final String FILE_UPLOAD_FAIL = "文件上传失败";
 
 }

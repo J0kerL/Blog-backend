@@ -6,6 +6,7 @@ import com.blog.properties.JwtProperties;
 import com.blog.result.PageResult;
 import com.blog.result.Result;
 import com.blog.service.UserService;
+import com.blog.utils.AliOssUtil;
 import com.blog.utils.JwtUtil;
 import com.blog.vo.UserLoginVO;
 import com.blog.vo.UserVO;
@@ -40,6 +41,8 @@ public class UserController {
     private JwtProperties jwtProperties;
     @Resource
     private RedisTemplate<String, String> redisTemplate;
+    @Resource
+    private AliOssUtil aliOssUtil;
 
 
     /**
