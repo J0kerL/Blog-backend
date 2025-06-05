@@ -3,9 +3,12 @@ package com.blog.handler;
 import com.blog.exception.BaseException;
 import com.blog.result.Result;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.BadSqlGrammarException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
 
 import static com.blog.constant.Constant.ALREADY_EXISTS;
@@ -32,7 +35,6 @@ public class GlobalExceptionHandler {
         return Result.error(ex.getMessage());
     }
 
-
     /**
      * 处理SQL异常
      *
@@ -49,5 +51,21 @@ public class GlobalExceptionHandler {
             return Result.error(msg);
         }
         return Result.error(UNKNOWN_ERROR);
+    }
+
+    /**
+     * 处理所有SQL相关的异常
+     *
+     * @param ex
+     * @return
+     */
+    @ExceptionHandler({SQLException.class, DataAccessException.class, BadSqlGrammarException.class})
+    public Result<String> handleSQLException(Exception ex) {
+        log.error("SQL异常：", ex);
+        String errorMessage = ex.getMessage();
+        if (errorMessage != null && errorMessage.contains("SQL")) {
+            return Result.error("数据库操作异常：" + errorMessage);
+        }
+        return Result.error("数据库操作异常：" + UNKNOWN_ERROR);
     }
 }

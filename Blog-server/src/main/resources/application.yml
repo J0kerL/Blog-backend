@@ -55,6 +55,8 @@ mybatis:
   # 开启驼峰命名自动映射
   configuration:
     map-underscore-to-camel-case: true
+    # 开启SQL日志
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 # 日志配置
 logging:
   level:
@@ -63,6 +65,9 @@ logging:
         mapper: debug
         controller: info
         service: info
+    # 添加MyBatis的SQL日志级别
+    org.apache.ibatis: debug
+    java.sql: debug
 blog:
   jwt:
     # 设置jwt签名加密时使用的秘钥
