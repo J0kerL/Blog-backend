@@ -107,3 +107,6 @@ knife4j:
     language: zh_cn
     # 重命名SwaggerModel名称,默认为Swagger Models
     swagger-model-name: 实体列表
+cors:
+  # Vue 开发服务器的默认地址
+  allowed-origins: http://localhost:5173
