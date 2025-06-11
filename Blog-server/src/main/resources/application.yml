@@ -109,4 +109,4 @@ knife4j:
     swagger-model-name: 实体列表
 cors:
   # Vue 开发服务器的默认地址
-  allowed-origins: http://localhost:5173
+  allowed-origins: http://localhost:3000
