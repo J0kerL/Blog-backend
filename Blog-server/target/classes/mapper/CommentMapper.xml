@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.blog.mapper.CommentMapper">
+    <!-- 根据文章ID删除评论 -->
+    <delete id="deleteByArticleId">
+        DELETE FROM comment WHERE article_id = #{articleId}
+    </delete>
+
+    <!-- 批量删除文章评论 -->
+    <delete id="batchDeleteByArticleIds">
+        DELETE FROM comment
+        WHERE article_id IN
+        <foreach collection="articleIds" item="articleId" open="(" separator="," close=")">
+            #{articleId}
+        </foreach>
+    </delete>
+</mapper>

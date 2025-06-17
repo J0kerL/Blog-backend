@@ -1,0 +1,19 @@
+blog:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    host: localhost
+    port: 3306
+    database: blog
+    username: root
+    password: 1234
+  data:
+    redis:
+      host: 192.168.227.133
+      port: 6379
+      password: 1234
+      database: 4
+  alioss:
+    endpoint: oss-cn-beijing.aliyuncs.com
+    access-key-id: LTAI5tM55aiju7WQD99sgegg
+    access-key-secret: IBBCxiG9b7LWYmEKkWZ52JLHMD74dI
+    bucket-name: diamond-blog

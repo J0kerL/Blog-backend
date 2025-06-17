@@ -1,5 +1,6 @@
 package com.blog.controller.user;
 
+import com.blog.context.UserContextHolder;
 import com.blog.dto.*;
 import com.blog.entity.User;
 import com.blog.properties.JwtProperties;
@@ -13,6 +14,7 @@ import com.blog.vo.UserVO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +23,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import static com.blog.constant.Constant.*;
@@ -116,12 +119,48 @@ public class UserController {
      *
      * @return
      */
-    @Operation(summary = "退出登录")
+    /*@Operation(summary = "退出登录")
     @PostMapping("/logout")
     public Result<String> logout() {
         // 清理用户上下文，已在拦截器的afterCompletion方法中自动清理
         log.info("用户退出登录");
         return Result.success(ALREADY_EXIT);
+    }*/
+
+    /**
+     * 退出登录
+     *
+     * @param request
+     * @return
+     */
+    @Operation(summary = "退出登录")
+    @PostMapping("/logout")
+    public Result<String> logout(HttpServletRequest request) {
+        try {
+            // 获取当前用户ID
+            Integer currentUserId = UserContextHolder.getCurrentId();
+
+            // 获取token
+            String token = request.getHeader(jwtProperties.getTokenName());
+
+            // 将token加入黑名单（设置过期时间与JWT相同）
+            if (token != null) {
+                redisTemplate.opsForValue().set(
+                        "blacklist:" + token,
+                        "logout",
+                        jwtProperties.getTtl(),
+                        TimeUnit.MILLISECONDS
+                );
+            }
+
+            // 记录退出日志
+            log.info("用户ID: {} 退出登录", currentUserId);
+
+            return Result.success(ALREADY_EXIT);
+        } finally {
+            // 确保清理ThreadLocal
+            UserContextHolder.removeCurrentId();
+        }
     }
 
     /**
