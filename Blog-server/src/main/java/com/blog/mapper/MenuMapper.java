@@ -15,7 +15,7 @@ public interface MenuMapper {
      * 获取菜单
      * @return
      */
-    @Select("select *from menu")
+    @Select("SELECT * FROM menu ORDER BY sort ASC")
     List<MenuVO> getMenu();
 
 }

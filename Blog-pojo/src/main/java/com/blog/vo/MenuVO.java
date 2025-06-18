@@ -12,14 +12,12 @@ import lombok.Data;
 public class MenuVO {
 
     private Integer id;
+    private String title;
+    private String name;
     private String path;
     private String component;
-    private String title;
-    private Integer sort;
     private String icon;
-    private String redirect;
-    private String name;
-    private Integer hidden;
+    private Integer sort;
     private Integer isExternal;
 
 }
