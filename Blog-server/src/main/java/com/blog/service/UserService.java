@@ -14,11 +14,11 @@ import java.util.List;
 public interface UserService {
 
     /**
-     * 根据用户名查询用户信息
-     * @param username
+     * 根据用户名或邮箱查询用户信息
+     * @param account
      * @return
      */
-    UserVO getByName(String username);
+    UserVO getByAccount(String account);
 
     /**
      * 注册

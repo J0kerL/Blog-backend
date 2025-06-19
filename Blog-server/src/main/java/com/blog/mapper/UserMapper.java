@@ -17,20 +17,12 @@ import java.util.List;
 public interface UserMapper {
 
     /**
-     * 根据用户名查询用户信息
-     * @param username
-     * @return
-     */
-    @Select("select *from user where username = #{username}")
-    User getByName(String username);
-
-    /**
-     * 登录查询用户
+     * 根据用户名或邮箱查询用户信息
      * @param account
      * @return
      */
     @Select("select *from user where username = #{account} or email = #{account}")
-    User getUser(String account);
+    User getByAccount(String account);
 
     /**
      * 注册

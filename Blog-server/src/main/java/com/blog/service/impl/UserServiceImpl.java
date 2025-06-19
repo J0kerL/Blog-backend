@@ -34,18 +34,19 @@ public class UserServiceImpl implements UserService {
     private UserMapper userMapper;
 
     /**
-     * 根据用户名查询用户信息
+     * 根据用户名或邮箱查询用户信息
      *
-     * @param username
+     * @param account
      * @return
      */
     @Override
-    public UserVO getByName(String username) {
-        User user = userMapper.getByName(username);
+    public UserVO getByAccount(String account) {
+        User user = userMapper.getByAccount(account);
         if (user == null) {
             throw new AccountNotFoundException(USER_NOT_FOUND);
         }
         return UserVO.builder()
+                .id(user.getId())
                 .username(user.getUsername())
                 .password("******")
                 .status(user.getStatus())
@@ -65,7 +66,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserVO register(UserRegisterDTO userRegisterDTO) {
         // 判断用户是否存在
-        if (userMapper.getByName(userRegisterDTO.getUsername()) != null) {
+        if (userMapper.getByAccount(userRegisterDTO.getUsername()) != null) {
             return null;
         }
         // 不存在 进行新增操作
@@ -93,7 +94,7 @@ public class UserServiceImpl implements UserService {
         String account = userLoginDTO.getAccount();
         String password = userLoginDTO.getPassword();
         //1、根据account查询数据库中的数据
-        User user = userMapper.getUser(account);
+        User user = userMapper.getByAccount(account);
         //2、处理各种异常情况（用户名/邮箱不存在、密码不对、账号被锁定）
         if (user == null) {
             //账号不存在
@@ -138,7 +139,7 @@ public class UserServiceImpl implements UserService {
     public void addUser(AddUserDTO addUserDTO) {
         // 判断用户是否存在
         // 存在 返回异常信息
-        if (userMapper.getByName(addUserDTO.getUsername()) != null) {
+        if (userMapper.getByAccount(addUserDTO.getUsername()) != null) {
             throw new AccountAlreadyExistException(ALREADY_EXISTS);
         }
         // 不存在 进行新增操作

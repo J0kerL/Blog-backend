@@ -7,7 +7,6 @@ import com.blog.properties.JwtProperties;
 import com.blog.result.PageResult;
 import com.blog.result.Result;
 import com.blog.service.UserService;
-import com.blog.utils.AliOssUtil;
 import com.blog.utils.JwtUtil;
 import com.blog.vo.UserLoginVO;
 import com.blog.vo.UserVO;
@@ -44,20 +43,17 @@ public class UserController {
     private JwtProperties jwtProperties;
     @Resource
     private RedisTemplate<String, String> redisTemplate;
-    @Resource
-    private AliOssUtil aliOssUtil;
-
 
     /**
-     * 根据用户名查询用户信息
+     * 根据用户名或邮箱查询用户信息
      *
-     * @param username
+     * @param account
      * @return
      */
-    @Operation(summary = "根据用户名查询用户信息")
-    @GetMapping("/{username}")
-    public Result<UserVO> getByName(@PathVariable("username") String username) {
-        UserVO userVO = userService.getByName(username);
+    @Operation(summary = "根据用户名或邮箱查询用户信息")
+    @GetMapping("/{account}")
+    public Result<UserVO> getByAccount(@PathVariable("account") String account) {
+        UserVO userVO = userService.getByAccount(account);
         log.info("查询到的用户为：{}", userVO);
         return Result.success(userVO);
     }
@@ -146,8 +142,8 @@ public class UserController {
             // 将token加入黑名单（设置过期时间与JWT相同）
             if (token != null) {
                 redisTemplate.opsForValue().set(
-                        "blacklist:" + token,
-                        "logout",
+                        "blacklist:logout:",
+                        "token" + token,
                         jwtProperties.getTtl(),
                         TimeUnit.MILLISECONDS
                 );

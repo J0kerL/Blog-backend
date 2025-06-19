@@ -11,6 +11,7 @@ import lombok.Data;
 @Builder
 public class UserVO {
 
+    private Integer id;
     private String username;
     private String password;
     private Integer status;
