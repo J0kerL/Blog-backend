@@ -178,7 +178,7 @@ public class ArticleServiceImpl implements ArticleService {
         BeanUtils.copyProperties(article, articleVO);
 
         // 设置分类名称
-        articleVO.setCategoryName(categoryMapper.selectById(article.getCategoryId()).getName());
+        articleVO.setCategoryName(categoryMapper.getById(article.getCategoryId()).getName());
 
         // 设置作者名称
         articleVO.setAuthorName(userMapper.getById(article.getAuthorId()).getUsername());
