@@ -82,4 +82,9 @@
         </where>
         ORDER BY id DESC
     </select>
+
+    <!-- 根据分类ID统计文章数量 -->
+    <select id="countByCategoryId" resultType="int">
+        SELECT COUNT(*) FROM article WHERE category_id = #{categoryId}
+    </select>
 </mapper>

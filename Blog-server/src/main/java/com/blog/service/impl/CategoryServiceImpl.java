@@ -5,6 +5,7 @@ import com.blog.dto.CategoryDTO;
 import com.blog.dto.CategoryPageQueryDTO;
 import com.blog.entity.Category;
 import com.blog.exception.CategoryNotFoundException;
+import com.blog.mapper.ArticleMapper;
 import com.blog.mapper.CategoryMapper;
 import com.blog.result.PageResult;
 import com.blog.service.CategoryService;
@@ -28,6 +29,9 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Resource
     private CategoryMapper categoryMapper;
+    
+    @Resource
+    private ArticleMapper articleMapper;
 
     @Override
     public PageResult pageQuery(CategoryPageQueryDTO categoryPageQueryDTO) {
@@ -75,6 +79,12 @@ public class CategoryServiceImpl implements CategoryService {
             Category category = categoryMapper.getById(id);
             if (category == null) {
                 throw new CategoryNotFoundException("分类不存在");
+            }
+            
+            // 检查该分类下是否有文章
+            int articleCount = articleMapper.countByCategoryId(id);
+            if (articleCount > 0) {
+                throw new CategoryNotFoundException("请先清空该分类下的文章");
             }
         }
         categoryMapper.deleteByIds(idList);

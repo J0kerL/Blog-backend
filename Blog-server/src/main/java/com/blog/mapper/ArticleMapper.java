@@ -14,6 +14,7 @@ import java.util.List;
 public interface ArticleMapper {
     /**
      * 新增文章
+     *
      * @param article
      * @return
      */
@@ -21,6 +22,7 @@ public interface ArticleMapper {
 
     /**
      * 更新文章
+     *
      * @param article
      * @return
      */
@@ -28,6 +30,7 @@ public interface ArticleMapper {
 
     /**
      * 根据ID删除文章
+     *
      * @param id
      * @return
      */
@@ -35,6 +38,7 @@ public interface ArticleMapper {
 
     /**
      * 批量删除文章
+     *
      * @param ids
      * @return
      */
@@ -42,6 +46,7 @@ public interface ArticleMapper {
 
     /**
      * 根据ID查询文章
+     *
      * @param id
      * @return
      */
@@ -49,8 +54,17 @@ public interface ArticleMapper {
 
     /**
      * 文章分页查询
+     *
      * @param articlePageQueryDTO
      * @return
      */
     Page<Article> pageQuery(ArticlePageQueryDTO articlePageQueryDTO);
+
+    /**
+     * 根据分类ID统计文章数量
+     *
+     * @param categoryId
+     * @return
+     */
+    int countByCategoryId(@Param("categoryId") Integer categoryId);
 }
