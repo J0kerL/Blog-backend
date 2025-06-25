@@ -18,10 +18,16 @@
         </foreach>
     </insert>
 
-    <!-- 根据文章ID删除文章-标签关联 -->
-    <delete id="deleteByArticleId">
-        DELETE
+    <!-- 根据标签ID统计文章数量 -->
+    <select id="countByTagId" resultType="int">
+        SELECT COUNT(*)
         FROM article_tag
+        WHERE tag_id = #{tagId}
+    </select>
+
+    <!-- 根据文章ID删除关联的标签 -->
+    <delete id="deleteByArticleId">
+        DELETE FROM article_tag
         WHERE article_id = #{articleId}
     </delete>
 

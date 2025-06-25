@@ -26,6 +26,13 @@ public interface ArticleTagMapper {
     int batchInsert(@Param("articleId") Integer articleId, @Param("tagIds") List<Integer> tagIds);
 
     /**
+     * 根据标签ID统计文章数量
+     * @param tagId
+     * @return
+     */
+    int countByTagId(@Param("tagId") Integer tagId);
+
+    /**
      * 根据文章ID删除文章-标签关联
      * @param articleId
      * @return
