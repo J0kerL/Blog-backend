@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * @author Diamond
@@ -18,8 +19,8 @@ public class ArticlePageQueryDTO implements Serializable {
     // 分类ID
     private Integer categoryId;
 
-    // 文章状态
-    private Integer status;
+    // 标签ID列表
+    private List<Integer> tagIds;
 
     // 页码
     private int page;

@@ -38,4 +38,10 @@ public interface CategoryMapper {
      * 批量删除分类
      */
     void deleteByIds(List<Integer> ids);
+
+    /**
+     * 查询所有分类
+     * @return
+     */
+    List<Category> list();
 }

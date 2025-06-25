@@ -89,4 +89,9 @@ public class CategoryServiceImpl implements CategoryService {
         }
         categoryMapper.deleteByIds(idList);
     }
+
+    @Override
+    public List<Category> list() {
+        return categoryMapper.list();
+    }
 }

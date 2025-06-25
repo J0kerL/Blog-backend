@@ -16,6 +16,7 @@
                 and status = #{status}
             </if>
         </where>
+        ORDER BY id ASC
     </select>
 
     <update id="updateUser">

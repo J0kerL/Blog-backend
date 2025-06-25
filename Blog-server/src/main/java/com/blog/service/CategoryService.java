@@ -2,8 +2,14 @@ package com.blog.service;
 
 import com.blog.dto.CategoryDTO;
 import com.blog.dto.CategoryPageQueryDTO;
+import com.blog.entity.Category;
 import com.blog.result.PageResult;
 
+import java.util.List;
+
+/**
+ * @author Administrator
+ */
 public interface CategoryService {
     /**
      * 分类分页查询
@@ -24,4 +30,10 @@ public interface CategoryService {
      * 删除分类
      */
     void deleteByIds(String ids);
+
+    /**
+     * 查询所有分类
+     * @return
+     */
+    List<Category> list();
 }

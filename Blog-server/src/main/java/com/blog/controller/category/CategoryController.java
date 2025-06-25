@@ -1,6 +1,7 @@
 package com.blog.controller.category;
 
 import com.blog.dto.*;
+import com.blog.entity.Category;
 import com.blog.result.PageResult;
 import com.blog.result.Result;
 import com.blog.service.CategoryService;
@@ -9,6 +10,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * @author Administrator
@@ -60,5 +63,17 @@ public class CategoryController {
     public Result<String> deleteByIds(@RequestParam("ids") String ids) {
         categoryService.deleteByIds(ids);
         return Result.success("删除分类成功");
+    }
+
+    /**
+     * 查询所有分类
+     * @return
+     */
+    @GetMapping("/list")
+    @Operation(summary = "查询所有分类")
+    public Result<List<Category>> list() {
+        log.info("查询所有分类");
+        List<Category> categories = categoryService.list();
+        return Result.success(categories);
     }
 }

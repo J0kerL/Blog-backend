@@ -68,19 +68,25 @@
 
     <!-- 文章分页查询 -->
     <select id="pageQuery" resultMap="BaseResultMap">
-        SELECT * FROM article
+        SELECT DISTINCT a.* FROM article a
+        <if test="tagIds != null and tagIds.size() > 0">
+            LEFT JOIN article_tag at ON a.id = at.article_id
+        </if>
         <where>
             <if test="title != null and title != ''">
-                AND title LIKE CONCAT('%', #{title}, '%')
+                AND a.title LIKE CONCAT('%', #{title}, '%')
             </if>
             <if test="categoryId != null">
-                AND category_id = #{categoryId}
+                AND a.category_id = #{categoryId}
             </if>
-            <if test="status != null">
-                AND status = #{status}
+            <if test="tagIds != null and tagIds.size() > 0">
+                AND at.tag_id IN
+                <foreach collection="tagIds" item="tagId" open="(" separator="," close=")">
+                    #{tagId}
+                </foreach>
             </if>
         </where>
-        ORDER BY id DESC
+        ORDER BY a.id ASC
     </select>
 
     <!-- 根据分类ID统计文章数量 -->

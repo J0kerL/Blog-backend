@@ -60,7 +60,7 @@
     <select id="list" resultType="com.blog.entity.Tag">
         SELECT id, name
         FROM tag
-        ORDER BY id DESC
+        ORDER BY id ASC
     </select>
 
 </mapper>

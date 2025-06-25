@@ -24,6 +24,12 @@
         ORDER BY id ASC
     </select>
 
+    <select id="list" resultType="com.blog.entity.Category">
+        SELECT id, name
+        FROM category
+        ORDER BY id ASC
+    </select>
+
     <insert id="addCategory" parameterType="com.blog.entity.Category" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO category
         (name, description)
