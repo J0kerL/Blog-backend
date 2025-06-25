@@ -4,11 +4,52 @@
 <mapper namespace="com.blog.mapper.RoleMapper">
 
     <select id="page" resultType="com.blog.entity.Role">
-        select *from role
+        select * from role
         <where>
             <if test="name != null and name != ''">
                 and name like concat('%',#{name},'%')
             </if>
         </where>
     </select>
+
+    <insert id="insert">
+        insert into role (code, name, remarks)
+        values (#{code}, #{name}, #{remarks})
+    </insert>
+
+    <update id="update">
+        update role
+        <set>
+            <if test="code != null and code != ''">
+                code = #{code},
+            </if>
+            <if test="name != null and name != ''">
+                name = #{name},
+            </if>
+            <if test="remarks != null">
+                remarks = #{remarks},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteById">
+        delete from role where id = #{id}
+    </delete>
+
+    <delete id="deleteByIds">
+        delete from role where id in
+        <foreach collection="ids" open="(" close=")" separator="," item="id">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="getById" resultType="com.blog.entity.Role">
+        select * from role where id = #{id}
+    </select>
+
+    <select id="getByCode" resultType="com.blog.entity.Role">
+        select * from role where code = #{code}
+    </select>
+
 </mapper>

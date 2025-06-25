@@ -66,4 +66,12 @@ public interface UserMapper {
      * @param ids
      */
     void deleteByIds(List<Integer> ids);
+
+    /**
+     * 根据角色ID查询用户数量
+     * @param roleId
+     * @return
+     */
+    @Select("select count(*) from user where role_id = #{roleId}")
+    int countByRoleId(Integer roleId);
 }
