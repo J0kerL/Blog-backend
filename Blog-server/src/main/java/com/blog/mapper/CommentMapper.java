@@ -1,5 +1,8 @@
 package com.blog.mapper;
 
+import com.blog.dto.CommentPageQueryDTO;
+import com.blog.vo.CommentVO;
+import com.github.pagehelper.Page;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -9,6 +12,20 @@ import java.util.List;
  * @create 2025-06-04 14:54
  */
 public interface CommentMapper {
+
+    /**
+     * 分页查询评论
+     * @param commentPageQueryDTO
+     * @return
+     */
+    Page<CommentVO> pageQuery(CommentPageQueryDTO commentPageQueryDTO);
+
+    /**
+     * 批量删除评论
+     * @param ids
+     * @return
+     */
+    int batchDelete(@Param("ids") List<Integer> ids);
 
     /**
      * 根据文章ID删除评论

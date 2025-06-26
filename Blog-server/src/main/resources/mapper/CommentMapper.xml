@@ -1,6 +1,46 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.blog.mapper.CommentMapper">
+    
+    <!-- 分页查询评论 -->
+    <select id="pageQuery" resultType="com.blog.vo.CommentVO">
+        SELECT 
+            c.id,
+            c.article_id as articleId,
+            a.title as articleTitle,
+            c.user_id as userId,
+            u.username,
+            u.avatar as userAvatar,
+            c.content,
+            c.parent_id as parentId,
+            c.create_time as createTime,
+            c.update_time as updateTime
+        FROM comment c
+        LEFT JOIN article a ON c.article_id = a.id
+        LEFT JOIN user u ON c.user_id = u.id
+        <where>
+            <if test="articleId != null">
+                AND c.article_id = #{articleId}
+            </if>
+            <if test="username != null and username != ''">
+                AND u.username LIKE CONCAT('%', #{username}, '%')
+            </if>
+            <if test="content != null and content != ''">
+                AND c.content LIKE CONCAT('%', #{content}, '%')
+            </if>
+        </where>
+        ORDER BY c.create_time DESC
+    </select>
+    
+    <!-- 批量删除评论 -->
+    <delete id="batchDelete">
+        DELETE FROM comment
+        WHERE id IN
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
     <!-- 根据文章ID删除评论 -->
     <delete id="deleteByArticleId">
         DELETE FROM comment WHERE article_id = #{articleId}
