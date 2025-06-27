@@ -93,4 +93,25 @@
     <select id="countByCategoryId" resultType="int">
         SELECT COUNT(*) FROM article WHERE category_id = #{categoryId}
     </select>
+
+    <!-- 统计文章总数 -->
+    <select id="countArticles" resultType="long">
+        SELECT COUNT(*) FROM article
+    </select>
+
+    <!-- 统计总浏览量 -->
+    <select id="sumViewCount" resultType="long">
+        SELECT COALESCE(SUM(view_count), 0) FROM article
+    </select>
+
+    <!-- 获取每日文章发布数量 -->
+    <select id="getDailyArticleCount" resultType="map">
+        SELECT 
+            DATE(create_time) as date,
+            COUNT(*) as count
+        FROM article 
+        WHERE DATE(create_time) BETWEEN #{startDate} AND #{endDate}
+        GROUP BY DATE(create_time)
+        ORDER BY date
+    </select>
 </mapper>

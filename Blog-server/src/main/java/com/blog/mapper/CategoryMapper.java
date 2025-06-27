@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface CategoryMapper {
@@ -44,4 +45,11 @@ public interface CategoryMapper {
      * @return
      */
     List<Category> list();
+
+    /**
+     * 获取各分类的文章数量统计
+     * @return
+     */
+    @Select("SELECT c.name, COUNT(a.id) as count FROM category c LEFT JOIN article a ON c.id = a.category_id GROUP BY c.id, c.name ORDER BY count DESC")
+    List<Map<String, Object>> getCategoryArticleCount();
 }

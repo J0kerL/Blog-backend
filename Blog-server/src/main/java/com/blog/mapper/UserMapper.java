@@ -74,4 +74,11 @@ public interface UserMapper {
      */
     @Select("select count(*) from user where role_id = #{roleId}")
     int countByRoleId(Integer roleId);
+
+    /**
+     * 统计用户总数
+     * @return
+     */
+    @Select("select count(*) from user")
+    Long countUsers();
 }

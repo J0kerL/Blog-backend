@@ -4,6 +4,7 @@ import com.blog.dto.CommentPageQueryDTO;
 import com.blog.vo.CommentVO;
 import com.github.pagehelper.Page;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 
@@ -40,5 +41,12 @@ public interface CommentMapper {
      * @return
      */
     int batchDeleteByArticleIds(@Param("articleIds") List<Integer> articleIds);
+
+    /**
+     * 统计评论总数
+     * @return
+     */
+    @Select("select count(*) from comment")
+    Long countComments();
 
 }

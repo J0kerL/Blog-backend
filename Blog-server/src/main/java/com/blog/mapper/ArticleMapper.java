@@ -5,7 +5,9 @@ import com.blog.entity.Article;
 import com.github.pagehelper.Page;
 import org.apache.ibatis.annotations.Param;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Diamond
@@ -67,4 +69,27 @@ public interface ArticleMapper {
      * @return
      */
     int countByCategoryId(@Param("categoryId") Integer categoryId);
+
+    /**
+     * 统计文章总数
+     *
+     * @return
+     */
+    Long countArticles();
+
+    /**
+     * 统计总浏览量
+     *
+     * @return
+     */
+    Long sumViewCount();
+
+    /**
+     * 获取每日文章发布数量
+     *
+     * @param startDate
+     * @param endDate
+     * @return
+     */
+    List<Map<String, Object>> getDailyArticleCount(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
 }
