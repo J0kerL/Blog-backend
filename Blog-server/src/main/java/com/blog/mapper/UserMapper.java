@@ -2,7 +2,6 @@ package com.blog.mapper;
 
 import com.blog.dto.UserDTO;
 import com.blog.dto.UserPageQueryDTO;
-import com.blog.dto.UserRegisterDTO;
 import com.blog.entity.User;
 import com.github.pagehelper.Page;
 import org.apache.ibatis.annotations.Insert;
@@ -26,11 +25,12 @@ public interface UserMapper {
 
     /**
      * 注册
-     * @param userRegisterDTO
+     * @param user
      * @return
      */
-    @Insert("insert into user (username,password,email) values (#{username},#{password},#{email})")
-    void register(UserRegisterDTO userRegisterDTO);
+    @Insert("insert into user (username, password, status, avatar, email, sex, role_id) VALUES" +
+            "(#{username},#{password},#{status},#{avatar},#{email},#{sex},#{roleId})")
+    void register(User user);
 
     /**
      * 用户分页查询
@@ -43,9 +43,9 @@ public interface UserMapper {
      * 新增用户
      * @param user
      */
-    @Insert("insert into user (username, password, status, avatar, email, sex, role_id) VALUES" +
+    /*@Insert("insert into user (username, password, status, avatar, email, sex, role_id) VALUES" +
             "(#{username},#{password},#{status},#{avatar},#{email},#{sex},#{roleId})")
-    void addUser(User user);
+    void addUser(User user);*/
 
     /**
      * 修改用户
@@ -58,7 +58,7 @@ public interface UserMapper {
      * @param id
      * @return
      */
-    @Select("select username from user where id = #{id}")
+    @Select("select * from user where id = #{id}")
     User getById(Integer id);
 
     /**

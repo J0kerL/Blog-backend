@@ -1,13 +1,13 @@
 package com.blog.mapper;
 
 import com.blog.dto.CategoryPageQueryDTO;
+import com.blog.dto.CategoryStatsDTO;
 import com.blog.entity.Category;
 import com.github.pagehelper.Page;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
-import java.util.Map;
 
 @Mapper
 public interface CategoryMapper {
@@ -47,9 +47,9 @@ public interface CategoryMapper {
     List<Category> list();
 
     /**
-     * 获取各分类的文章数量统计
-     * @return
+     * 获取分类统计数据
+     * @return 分类名称和对应文章数量的列表
      */
     @Select("SELECT c.name, COUNT(a.id) as count FROM category c LEFT JOIN article a ON c.id = a.category_id GROUP BY c.id, c.name ORDER BY count DESC")
-    List<Map<String, Object>> getCategoryArticleCount();
+    List<CategoryStatsDTO> getCategoryStats();
 }

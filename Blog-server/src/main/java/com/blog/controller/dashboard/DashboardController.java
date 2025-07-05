@@ -38,38 +38,14 @@ public class DashboardController {
     }
 
     /**
-     * 获取最近七天访问统计
-     * @return
-     */
-    @GetMapping("/visits")
-    @Operation(summary = "获取最近七天访问统计")
-    public Result<Map<String, Object>> getVisitStats() {
-        log.info("获取最近七天访问统计");
-        Map<String, Object> visitStats = dashboardService.getVisitStats();
-        return Result.success(visitStats);
-    }
-
-    /**
-     * 获取分类统计
+     * 获取分类统计数据
      * @return
      */
     @GetMapping("/categories")
-    @Operation(summary = "获取分类统计")
+    @Operation(summary = "获取分类统计数据")
     public Result<Map<String, Object>> getCategoryStats() {
-        log.info("获取分类统计");
+        log.info("获取分类统计数据");
         Map<String, Object> categoryStats = dashboardService.getCategoryStats();
         return Result.success(categoryStats);
-    }
-
-    /**
-     * 获取文章贡献度数据
-     * @return
-     */
-    @GetMapping("/contributions")
-    @Operation(summary = "获取文章贡献度数据")
-    public Result<Map<String, Object>> getContributionStats() {
-        log.info("获取文章贡献度数据");
-        Map<String, Object> contributionStats = dashboardService.getContributionStats();
-        return Result.success(contributionStats);
     }
 }

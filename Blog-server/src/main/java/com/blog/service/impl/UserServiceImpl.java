@@ -77,7 +77,7 @@ public class UserServiceImpl implements UserService {
         user.setAvatar(AVATAR_URL);
         user.setSex(MAN);
         user.setRoleId(NORMAL_USER);
-        userMapper.addUser(user);
+        userMapper.register(user);
         return BeanUtil.copyProperties(user, UserVO.class);
     }
 
@@ -149,7 +149,7 @@ public class UserServiceImpl implements UserService {
         user.setAvatar(AVATAR_URL);
         user.setSex(MAN);
         user.setRoleId(NORMAL_USER);
-        userMapper.addUser(user);
+        userMapper.register(user);
     }
 
     /**

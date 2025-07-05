@@ -113,19 +113,6 @@ public class UserController {
     /**
      * 退出登录
      *
-     * @return
-     */
-    /*@Operation(summary = "退出登录")
-    @PostMapping("/logout")
-    public Result<String> logout() {
-        // 清理用户上下文，已在拦截器的afterCompletion方法中自动清理
-        log.info("用户退出登录");
-        return Result.success(ALREADY_EXIT);
-    }*/
-
-    /**
-     * 退出登录
-     *
      * @param request
      * @return
      */

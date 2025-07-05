@@ -1,5 +1,6 @@
 package com.blog.service.impl;
 
+import com.blog.dto.CategoryStatsDTO;
 import com.blog.mapper.ArticleMapper;
 import com.blog.mapper.CategoryMapper;
 import com.blog.mapper.CommentMapper;
@@ -9,9 +10,8 @@ import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 仪表盘服务实现类
@@ -66,100 +66,36 @@ public class DashboardServiceImpl implements DashboardService {
     }
 
     @Override
-    public Map<String, Object> getVisitStats() {
-        Map<String, Object> visitStats = new HashMap<>();
-        
-        // 获取最近7天的日期
-        List<String> dates = new ArrayList<>();
-        List<Integer> visits = new ArrayList<>();
-        
-        LocalDate today = LocalDate.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd");
-        
-        for (int i = 6; i >= 0; i--) {
-            LocalDate date = today.minusDays(i);
-            dates.add(date.format(formatter));
-            
-            // 生成随机访问数据，每次刷新页面都会变化
-            visits.add(100 + (int)(Math.random() * 200));
-        }
-        
-        visitStats.put("dates", dates);
-        visitStats.put("visits", visits);
-        
-        return visitStats;
-    }
-
-    @Override
     public Map<String, Object> getCategoryStats() {
-        Map<String, Object> categoryStats = new HashMap<>();
+        Map<String, Object> result = new HashMap<>();
         
         try {
-            // 获取各分类的文章数量
-            List<Map<String, Object>> categoryData = categoryMapper.getCategoryArticleCount();
+            // 获取分类统计数据
+            List<CategoryStatsDTO> categoryStatsList = categoryMapper.getCategoryStats();
             
-            List<String> names = new ArrayList<>();
-            List<Integer> values = new ArrayList<>();
-            List<String> colors = Arrays.asList("#409EFF", "#67C23A", "#E6A23C", "#F56C6C", "#909399");
+            // 转换为前端需要的格式
+            List<Map<String, Object>> data = categoryStatsList.stream()
+                .map(stats -> {
+                    Map<String, Object> item = new HashMap<>();
+                    item.put("name", stats.getName());
+                    item.put("value", stats.getCount());
+                    return item;
+                })
+                .collect(Collectors.toList());
             
-            for (int i = 0; i < categoryData.size() && i < 5; i++) {
-                Map<String, Object> item = categoryData.get(i);
-                names.add((String) item.get("name"));
-                values.add(((Number) item.get("count")).intValue());
-            }
-            
-            categoryStats.put("names", names);
-            categoryStats.put("values", values);
-            categoryStats.put("colors", colors.subList(0, Math.min(names.size(), colors.size())));
+            result.put("data", data);
             
         } catch (Exception e) {
-            log.error("获取分类统计失败", e);
+            log.error("获取分类统计数据失败", e);
             // 返回默认数据
-            categoryStats.put("names", Arrays.asList("技术文章", "生活随笔", "学习笔记"));
-            categoryStats.put("values", Arrays.asList(35, 25, 20));
-            categoryStats.put("colors", Arrays.asList("#409EFF", "#67C23A", "#E6A23C"));
+            List<Map<String, Object>> defaultData = new ArrayList<>();
+            Map<String, Object> defaultItem = new HashMap<>();
+            defaultItem.put("name", "默认分类");
+            defaultItem.put("value", 0);
+            defaultData.add(defaultItem);
+            result.put("data", defaultData);
         }
         
-        return categoryStats;
-    }
-
-    @Override
-    public Map<String, Object> getContributionStats() {
-        Map<String, Object> contributionStats = new HashMap<>();
-        
-        // 生成今年的文章贡献度数据（均匀分布的多中少）
-        Map<String, Integer> contributionMap = new HashMap<>();
-        LocalDate startDate = LocalDate.of(LocalDate.now().getYear(), 1, 1);
-        LocalDate endDate = LocalDate.now();
-        
-        // 创建一个随机但固定的种子，确保数据一致性
-        Random random = new Random(2024);
-        
-        LocalDate currentDate = startDate;
-        while (!currentDate.isAfter(endDate)) {
-            // 生成0-4的文章数量，实现多中少的均匀分布
-            // 0: 40%, 1: 25%, 2: 20%, 3: 10%, 4: 5%
-            int rand = random.nextInt(100);
-            int count;
-            if (rand < 40) {
-                count = 0;  // 无文章
-            } else if (rand < 65) {
-                count = 1;  // 少量文章
-            } else if (rand < 85) {
-                count = 2;  // 中等文章
-            } else if (rand < 95) {
-                count = 3;  // 较多文章
-            } else {
-                count = 4;  // 大量文章
-            }
-            
-            contributionMap.put(currentDate.toString(), count);
-            currentDate = currentDate.plusDays(1);
-        }
-        
-        contributionStats.put("data", contributionMap);
-        contributionStats.put("year", LocalDate.now().getYear());
-        
-        return contributionStats;
+        return result;
     }
 }

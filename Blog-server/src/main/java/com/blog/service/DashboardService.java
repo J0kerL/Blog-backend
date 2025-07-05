@@ -15,20 +15,8 @@ public interface DashboardService {
     Map<String, Object> getStats();
 
     /**
-     * 获取最近七天访问统计
-     * @return 最近七天的访问数据
-     */
-    Map<String, Object> getVisitStats();
-
-    /**
-     * 获取分类统计
-     * @return 各分类的文章数量统计
+     * 获取分类统计数据
+     * @return 包含各分类文章数量的统计数据
      */
     Map<String, Object> getCategoryStats();
-
-    /**
-     * 获取文章贡献度数据
-     * @return 一年内每天的文章发布数量
-     */
-    Map<String, Object> getContributionStats();
 }
