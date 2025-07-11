@@ -13,11 +13,11 @@ public class MenuVO {
 
     private Integer id;
     private String title;
-    private String name;
+    private String icon;
     private String path;
     private String component;
-    private String icon;
+    private Integer parentId;
     private Integer sort;
-    private Integer isExternal;
+    private Integer hidden;
 
 }

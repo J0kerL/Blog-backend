@@ -17,7 +17,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static com.blog.constant.Constant.*;
+// 移除常量导入，因为不再需要角色权限校验
+// import static com.blog.constant.Constant.*;
 
 /**
  * @Author Java小猪
@@ -37,13 +38,21 @@ public class MenuServiceImpl implements MenuService {
      */
     @Override
     public List<MenuVO> getMenu() {
-        List<MenuVO> list = menuMapper.getMenu();
-        log.info("菜单：{}", list);
-        if (!list.isEmpty()) {
-            return list;
-        } else {
-            return null;
+        List<MenuVO> list;
+        
+        try {
+            // 移除权限校验，直接返回所有菜单
+            log.info("获取所有菜单（已移除权限校验）");
+            list = menuMapper.getMenu();
+            
+            log.info("获取到菜单数量: {}", list != null ? list.size() : 0);
+            
+        } catch (Exception e) {
+            log.error("获取菜单失败", e);
+            throw new RuntimeException("获取菜单失败: " + e.getMessage());
         }
+        
+        return list;
     }
 
     /**
@@ -85,8 +94,11 @@ public class MenuServiceImpl implements MenuService {
         
         Menu menu = BeanUtil.copyProperties(menuDTO, Menu.class);
         // 设置默认值
-        if (menu.getIsExternal() == null) {
-            menu.setIsExternal(0);
+        if (menu.getHidden() == null) {
+            menu.setHidden(0); // 默认显示
+        }
+        if (menu.getParentId() == null) {
+            menu.setParentId(0); // 默认为根菜单
         }
         
         menuMapper.insert(menu);

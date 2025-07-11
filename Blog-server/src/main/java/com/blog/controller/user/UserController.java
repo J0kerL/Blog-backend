@@ -3,6 +3,7 @@ package com.blog.controller.user;
 import com.blog.context.UserContextHolder;
 import com.blog.dto.*;
 import com.blog.entity.User;
+import com.blog.mapper.UserMapper;
 import com.blog.properties.JwtProperties;
 import com.blog.result.PageResult;
 import com.blog.result.Result;
@@ -10,6 +11,7 @@ import com.blog.service.UserService;
 import com.blog.utils.JwtUtil;
 import com.blog.vo.UserLoginVO;
 import com.blog.vo.UserVO;
+import io.jsonwebtoken.Claims;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
@@ -43,6 +45,8 @@ public class UserController {
     private JwtProperties jwtProperties;
     @Resource
     private RedisTemplate<String, String> redisTemplate;
+    @Resource
+    private UserMapper userMapper;
 
     /**
      * 根据用户名或邮箱查询用户信息
@@ -111,6 +115,67 @@ public class UserController {
     }
 
     /**
+     * 获取当前用户信息
+     *
+     * @return
+     */
+    @Operation(summary = "获取当前用户信息")
+    @GetMapping("/info")
+    public Result<UserVO> getUserInfo(HttpServletRequest request) {
+        try {
+            // 优先从ThreadLocal获取用户ID
+            Integer currentUserId = UserContextHolder.getCurrentId();
+            
+            // 如果ThreadLocal为空，尝试从JWT token中解析
+            if (currentUserId == null) {
+                log.warn("ThreadLocal中用户ID为空，尝试从JWT token解析");
+                String token = request.getHeader("Authorization");
+                if (token != null && token.startsWith("Bearer ")) {
+                    token = token.substring(7);
+                    try {
+                        Claims claims = JwtUtil.parseJWT(jwtProperties.getSecretKey(), token);
+                        currentUserId = (Integer) claims.get(USER_ID);
+                        log.info("从JWT token解析到用户ID: {}", currentUserId);
+                    } catch (Exception e) {
+                        log.error("JWT token解析失败: {}", e.getMessage());
+                        return Result.error(401, "Token无效，请重新登录");
+                    }
+                } else {
+                    return Result.error(401, "未提供有效的认证信息");
+                }
+            }
+            
+            if (currentUserId == null) {
+                return Result.error(401, "用户未登录");
+            }
+            
+            // 根据ID查询用户信息
+            User user = userMapper.getById(currentUserId);
+            if (user == null) {
+                return Result.error(404, "用户不存在");
+            }
+            
+            // 构建UserVO对象
+            UserVO userVO = UserVO.builder()
+                    .id(user.getId())
+                    .username(user.getUsername())
+                    .password("******")
+                    .status(user.getStatus())
+                    .avatar(user.getAvatar())
+                    .email(user.getEmail())
+                    .sex(user.getSex())
+                    .roleId(user.getRoleId())
+                    .build();
+            
+            log.info("成功获取用户信息: {}", user.getUsername());
+            return Result.success(userVO);
+        } catch (Exception e) {
+            log.error("获取用户信息失败: {}", e.getMessage());
+            return Result.error(500, "获取用户信息失败: " + e.getMessage());
+        }
+    }
+
+    /**
      * 退出登录
      *
      * @param request
@@ -120,24 +185,32 @@ public class UserController {
     @PostMapping("/logout")
     public Result<String> logout(HttpServletRequest request) {
         try {
-            // 获取当前用户ID
-            Integer currentUserId = UserContextHolder.getCurrentId();
-
             // 获取token
             String token = request.getHeader(jwtProperties.getTokenName());
-
-            // 将token加入黑名单（设置过期时间与JWT相同）
+            Integer currentUserId = null;
+            
+            // 从token中解析用户ID（用于日志记录）
             if (token != null) {
+                try {
+                    Claims claims = JwtUtil.parseJWT(jwtProperties.getSecretKey(), token);
+                    currentUserId = Integer.valueOf(claims.get(USER_ID).toString());
+                } catch (Exception e) {
+                    log.warn("解析token失败，无法获取用户ID: {}", e.getMessage());
+                }
+                
+                // 将token加入黑名单（设置过期时间与JWT相同）
+                String blacklistKey = "blacklist:logout:token";
                 redisTemplate.opsForValue().set(
-                        "blacklist:logout:",
-                        "token" + token,
+                        blacklistKey,
+                        token,
                         jwtProperties.getTtl(),
                         TimeUnit.MILLISECONDS
                 );
+                log.info("Token已加入黑名单，key: {}, value: {}", blacklistKey, token);
             }
 
             // 记录退出日志
-            log.info("用户ID: {} 退出登录", currentUserId);
+            log.info("用户: {} 退出登录", currentUserId);
 
             return Result.success(ALREADY_EXIT);
         } finally {

@@ -40,8 +40,8 @@ public interface MenuMapper {
      * 新增菜单
      * @param menu
      */
-    @Insert("INSERT INTO menu (title, name, path, component, icon, sort, is_external) " +
-            "VALUES (#{title}, #{name}, #{path}, #{component}, #{icon}, #{sort}, #{isExternal})")
+    @Insert("INSERT INTO menu (title, icon, path, component, parent_id, sort, hidden) " +
+            "VALUES (#{title}, #{icon}, #{path}, #{component}, #{parentId}, #{sort}, #{hidden})")
     @Options(useGeneratedKeys = true, keyProperty = "id")
     void insert(Menu menu);
 
@@ -49,8 +49,8 @@ public interface MenuMapper {
      * 更新菜单
      * @param menu
      */
-    @Update("UPDATE menu SET title = #{title}, name = #{name}, path = #{path}, " +
-            "component = #{component}, icon = #{icon}, sort = #{sort}, is_external = #{isExternal} " +
+    @Update("UPDATE menu SET title = #{title}, icon = #{icon}, path = #{path}, " +
+            "component = #{component}, parent_id = #{parentId}, sort = #{sort}, hidden = #{hidden} " +
             "WHERE id = #{id}")
     void update(Menu menu);
 

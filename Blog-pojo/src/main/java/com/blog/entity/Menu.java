@@ -17,21 +17,21 @@ import java.io.Serializable;
 @Builder
 public class Menu implements Serializable {
 
-    // 菜单逐渐id
+    // 菜单ID
     private Integer id;
-    // 菜单标题
-    private String title;
     // 菜单名称
-    private String name;
+    private String title;
+    // 图标
+    private String icon;
     // 前端路由路径
     private String path;
-    // 前端组件
+    // 前端组件路径
     private String component;
-    // 菜单图标
-    private String icon;
+    // 父菜单ID（0为根）
+    private Integer parentId;
     // 排序
     private Integer sort;
-    // 是否外链 0-否 1-是
-    private Integer isExternal;
+    // 是否隐藏 0-显示 1-隐藏
+    private Integer hidden;
 
 }
