@@ -130,8 +130,7 @@ public class UserController {
             if (currentUserId == null) {
                 log.warn("ThreadLocal中用户ID为空，尝试从JWT token解析");
                 String token = request.getHeader("Authorization");
-                if (token != null && token.startsWith("Bearer ")) {
-                    token = token.substring(7);
+                if (token != null) {
                     try {
                         Claims claims = JwtUtil.parseJWT(jwtProperties.getSecretKey(), token);
                         currentUserId = (Integer) claims.get(USER_ID);

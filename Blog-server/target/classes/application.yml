@@ -21,7 +21,9 @@ spring:
       port: ${blog.data.redis.port}
       password: ${blog.data.redis.password}
       database: ${blog.data.redis.database}
-
+  output:
+    ansi:
+      enabled: always
   # 配置邮件服务（使用 QQ 邮箱的 SMTP 服务器）
   mail:
     # 邮件服务器主机为 smtp.qq.com
@@ -68,12 +70,14 @@ logging:
     # 添加MyBatis的SQL日志级别
     org.apache.ibatis: debug
     java.sql: debug
+  pattern:
+    console: "%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %clr(%5p) %clr(%-40.40logger{39}){cyan} : %msg%n"
 blog:
   jwt:
     # 设置jwt签名加密时使用的秘钥
     secret-key: DiamondBlog
     # 设置jwt过期时间 2小时
-    ttl: 7200000
+    ttl: 3600000
     # 设置前端传递过来的令牌名称
     token-name: Authorization
   aliyun:

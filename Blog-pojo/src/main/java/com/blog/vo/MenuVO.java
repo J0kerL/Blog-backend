@@ -1,7 +1,11 @@
 package com.blog.vo;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 /**
  * @Author Java小猪
@@ -9,6 +13,8 @@ import lombok.Data;
  */
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class MenuVO {
 
     private Integer id;
@@ -19,5 +25,6 @@ public class MenuVO {
     private Integer parentId;
     private Integer sort;
     private Integer hidden;
+    private List<MenuVO> children;
 
 }

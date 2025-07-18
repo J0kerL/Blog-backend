@@ -15,6 +15,8 @@ import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 // 移除常量导入，因为不再需要角色权限校验
@@ -41,18 +43,31 @@ public class MenuServiceImpl implements MenuService {
         List<MenuVO> list;
         
         try {
-            // 移除权限校验，直接返回所有菜单
-            log.info("获取所有菜单（已移除权限校验）");
             list = menuMapper.getMenu();
-            
-            log.info("获取到菜单数量: {}", list != null ? list.size() : 0);
-            
         } catch (Exception e) {
-            log.error("获取菜单失败", e);
             throw new RuntimeException("获取菜单失败: " + e.getMessage());
         }
-        
-        return list;
+        // 组装树结构
+        return buildMenuTree(list, 0);
+    }
+
+    /**
+     * 将菜单列表组装为树结构
+     * @param menuList 菜单列表
+     * @param parentId 父ID
+     * @return 树结构菜单
+     */
+    private List<MenuVO> buildMenuTree(List<MenuVO> menuList, Integer parentId) {
+        List<MenuVO> tree = new ArrayList<>();
+        for (MenuVO menu : menuList) {
+            if (menu.getParentId() != null && menu.getParentId().equals(parentId)) {
+                // 递归查找子菜单
+                List<MenuVO> children = buildMenuTree(menuList, menu.getId());
+                menu.setChildren(children);
+                tree.add(menu);
+            }
+        }
+        return tree;
     }
 
     /**

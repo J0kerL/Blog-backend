@@ -11,7 +11,7 @@
  Target Server Version : 80041 (8.0.41)
  File Encoding         : 65001
 
- Date: 04/07/2025 13:24:46
+ Date: 14/07/2025 11:30:40
 */
 
 SET NAMES utf8mb4;
@@ -108,27 +108,27 @@ CREATE TABLE `comment`  (
 DROP TABLE IF EXISTS `menu`;
 CREATE TABLE `menu`  (
   `id` int NOT NULL AUTO_INCREMENT COMMENT '菜单ID',
-  `title` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '菜单标题',
-  `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '菜单名称',
-  `path` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '路由路径',
-  `component` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '前端组件',
-  `icon` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '图标',
+  `title` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '菜单名称',
+  `icon` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '图标',
+  `path` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '前端路由路径',
+  `component` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '前端组件路径',
+  `parent_id` int NULL DEFAULT 0 COMMENT '父菜单ID（0为根）',
   `sort` int NULL DEFAULT 0 COMMENT '排序',
-  `is_external` tinyint NULL DEFAULT 0 COMMENT '是否外链 0-否 1-是',
+  `hidden` tinyint(1) NOT NULL DEFAULT 0 COMMENT '是否隐藏 0-显示 1-隐藏',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 12 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '菜单表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 14 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '菜单表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of menu
 -- ----------------------------
-INSERT INTO `menu` VALUES (1, '用户管理', 'user', '/user', 'UserManage', 'User', 2, 0);
-INSERT INTO `menu` VALUES (2, '角色管理', 'role', '/role', 'RoleManage', 'Lock', 3, 0);
-INSERT INTO `menu` VALUES (3, '文章管理', 'article', '/article', 'ArticleManage', 'Document', 4, 0);
-INSERT INTO `menu` VALUES (4, '标签管理', 'tag', '/tag', 'TagManage', 'PriceTag', 5, 0);
-INSERT INTO `menu` VALUES (5, '分类管理', 'category', '/category', 'CategoryManage', 'Collection', 6, 0);
-INSERT INTO `menu` VALUES (6, '评论管理', 'comment', '/comment', 'CommentManage', 'ChatLineRound', 7, 0);
-INSERT INTO `menu` VALUES (7, '菜单管理', 'menu', '/menu', 'MenuManage', 'Setting', 8, 0);
-INSERT INTO `menu` VALUES (8, '仪表盘', 'dashboard', '/dashboard', 'Dashboard', 'Odometer', 1, 0);
+INSERT INTO `menu` VALUES (1, '用户管理', 'User', '/user', '@/views/user/index', 0, 1, 0);
+INSERT INTO `menu` VALUES (2, '角色管理', 'Lock', '/role', '@/views/role/index', 0, 2, 0);
+INSERT INTO `menu` VALUES (3, '文章管理', 'Document', '/article', '@/views/article/index', 0, 3, 0);
+INSERT INTO `menu` VALUES (4, '标签管理', 'PriceTag', '/tag', '@/views/tag/index', 0, 4, 0);
+INSERT INTO `menu` VALUES (5, '分类管理', 'Collection', '/category', '@/views/category/index', 0, 5, 0);
+INSERT INTO `menu` VALUES (6, '评论管理', 'ChatLineRound', '/comment', '@/views/comment/index', 0, 6, 0);
+INSERT INTO `menu` VALUES (7, '菜单管理', 'Setting', '/menu', '@/views/menu/index', 0, 7, 0);
+INSERT INTO `menu` VALUES (13, '个人中心', 'UserFilled', '/profile', '@/views/profile/index', 0, 8, 0);
 
 -- ----------------------------
 -- Table structure for role
@@ -149,36 +149,6 @@ CREATE TABLE `role`  (
 INSERT INTO `role` VALUES (1, '1', '超级管理员', '拥有至高无上的权力');
 INSERT INTO `role` VALUES (2, '2', '管理员', '一人之下，万人之上');
 INSERT INTO `role` VALUES (3, '3', '普通用户', '平民');
-
--- ----------------------------
--- Table structure for role_menu
--- ----------------------------
-DROP TABLE IF EXISTS `role_menu`;
-CREATE TABLE `role_menu`  (
-  `id` int NOT NULL AUTO_INCREMENT COMMENT '主键',
-  `role_id` int NOT NULL COMMENT '角色ID',
-  `menu_id` int NOT NULL COMMENT '菜单ID',
-  PRIMARY KEY (`id`) USING BTREE,
-  INDEX `idx_role_id`(`role_id` ASC) USING BTREE,
-  INDEX `idx_menu_id`(`menu_id` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 14 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '角色-菜单关联表' ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Records of role_menu
--- ----------------------------
-INSERT INTO `role_menu` VALUES (1, 1, 1);
-INSERT INTO `role_menu` VALUES (2, 1, 2);
-INSERT INTO `role_menu` VALUES (3, 1, 3);
-INSERT INTO `role_menu` VALUES (4, 1, 4);
-INSERT INTO `role_menu` VALUES (5, 1, 5);
-INSERT INTO `role_menu` VALUES (6, 1, 6);
-INSERT INTO `role_menu` VALUES (7, 1, 7);
-INSERT INTO `role_menu` VALUES (8, 2, 1);
-INSERT INTO `role_menu` VALUES (9, 2, 2);
-INSERT INTO `role_menu` VALUES (10, 2, 3);
-INSERT INTO `role_menu` VALUES (11, 2, 4);
-INSERT INTO `role_menu` VALUES (12, 2, 5);
-INSERT INTO `role_menu` VALUES (13, 2, 6);
 
 -- ----------------------------
 -- Table structure for tag
