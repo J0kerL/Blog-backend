@@ -149,10 +149,21 @@ public class UserServiceImpl implements UserService {
         // 不存在 进行新增操作
         User user = new User();
         BeanUtil.copyProperties(addUserDTO, user);
-        user.setStatus(ENABLE);
+        
+        // 设置默认值（如果前端没有传递）
+        if (user.getStatus() == null) {
+            user.setStatus(ENABLE);
+        }
+        if (user.getSex() == null) {
+            user.setSex(MAN);
+        }
+        if (user.getRoleId() == null) {
+            user.setRoleId(NORMAL_USER);
+        }
+        
+        // 设置默认头像
         user.setAvatar(AVATAR_URL);
-        user.setSex(MAN);
-        user.setRoleId(NORMAL_USER);
+        
         userMapper.register(user);
     }
 
@@ -165,16 +176,22 @@ public class UserServiceImpl implements UserService {
         if (userMapper.getById(userDTO.getId()) == null) {
             throw new AccountNotFoundException(USER_NOT_FOUND);
         }
-        // 如果用户上传了新头像，则更新头像
-        if (userDTO.getAvatar() != null && !userDTO.getAvatar().equals(AVATAR_URL)) {
-            userMapper.updateUser(userDTO);
-        } else {
-            // 如果没有上传新头像，保持原头像不变
-            UserDTO updateDTO = new UserDTO();
-            BeanUtil.copyProperties(userDTO, updateDTO);
-            updateDTO.setAvatar(null);
-            userMapper.updateUser(updateDTO);
+        
+        // 创建更新DTO，处理特殊字段
+        UserDTO updateDTO = new UserDTO();
+        BeanUtil.copyProperties(userDTO, updateDTO);
+        
+        // 如果密码为空，则不更新密码字段
+        if (userDTO.getPassword() == null || userDTO.getPassword().trim().isEmpty()) {
+            updateDTO.setPassword(null);
         }
+        
+        // 如果没有上传新头像，保持原头像不变
+        if (userDTO.getAvatar() == null || userDTO.getAvatar().equals(AVATAR_URL)) {
+            updateDTO.setAvatar(null);
+        }
+        
+        userMapper.updateUser(updateDTO);
     }
 
     /**

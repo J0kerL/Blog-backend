@@ -16,5 +16,8 @@ public class AddUserDTO implements Serializable {
     private String username;
     private String password;
     private String email;
+    private Integer sex;
+    private Integer status;
+    private Integer roleId;
 
 }
