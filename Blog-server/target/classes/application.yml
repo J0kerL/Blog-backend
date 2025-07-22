@@ -102,7 +102,7 @@ springdoc:
     path: /v3/api-docs
     # 开启文档功能
     enabled: true
-# Knife4j增强功能配置
+# Knife4j增强功能配置 访问地址 http://localhost:8080/api/doc.html
 knife4j:
   # 是否启用 Knife4j
   enable: true
