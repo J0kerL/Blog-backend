@@ -13,8 +13,7 @@
             u.avatar as userAvatar,
             c.content,
             c.parent_id as parentId,
-            c.create_time as createTime,
-            c.update_time as updateTime
+            c.create_time as createTime
         FROM comment c
         LEFT JOIN article a ON c.article_id = a.id
         LEFT JOIN user u ON c.user_id = u.id
