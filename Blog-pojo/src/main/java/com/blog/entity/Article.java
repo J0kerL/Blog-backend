@@ -19,6 +19,7 @@ public class Article implements Serializable {
     private Integer id;
     private String title;
     private String content;
+    private String cover;
     private Integer categoryId;
     private Integer authorId;
     // 0-草稿，1-已发布

@@ -20,6 +20,7 @@ public class ArticleVO {
     private Integer id;
     private String title;
     private String content;
+    private String cover;
     private Integer categoryId;
     private String categoryName;
     private Integer authorId;

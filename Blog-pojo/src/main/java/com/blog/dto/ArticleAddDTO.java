@@ -19,6 +19,9 @@ public class ArticleAddDTO implements Serializable {
     @Schema(description = "文章内容")
     private String content;
 
+    @Schema(description = "文章封面")
+    private String cover;
+
     @Schema(description = "分类ID")
     private Integer categoryId;
 

@@ -5,6 +5,7 @@
         <id column="id" property="id"/>
         <result column="title" property="title"/>
         <result column="content" property="content"/>
+        <result column="cover" property="cover"/>
         <result column="category_id" property="categoryId"/>
         <result column="author_id" property="authorId"/>
         <result column="status" property="status"/>
@@ -12,8 +13,8 @@
 
     <!-- 新增文章 -->
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO article (title, content, category_id, author_id, status)
-        VALUES (#{title}, #{content}, #{categoryId}, #{authorId}, #{status})
+        INSERT INTO article (title, content, cover, category_id, author_id, status)
+        VALUES (#{title}, #{content}, #{cover}, #{categoryId}, #{authorId}, #{status})
     </insert>
 
     <!-- 更新文章 -->
@@ -27,6 +28,9 @@
                     </if>
                     <if test="content != null">
                         content = #{content},
+                    </if>
+                    <if test="cover != null">
+                        cover = #{cover},
                     </if>
                     <if test="categoryId != null">
                         category_id = #{categoryId},
@@ -86,7 +90,7 @@
                 </foreach>
             </if>
         </where>
-        ORDER BY a.id ASC
+        ORDER BY a.id DESC
     </select>
 
     <!-- 根据分类ID统计文章数量 -->
