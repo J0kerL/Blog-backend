@@ -32,6 +32,16 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
                         "/**/login",
                         "/**/register",
                         "/captcha/**",
+                        // 公开的文章接口
+                        "/article/page",
+                        "/article/get/**",
+                        // 公开的分类接口
+                        "/category/list",
+                        "/category/page",
+                        // 公开的标签接口
+                        "/tag/list",
+                        // 公开的仪表板接口
+                        "/dashboard/**",
                         // Knife4j 文档路径
                         "/doc.html",
                         "/swagger-ui/**",
