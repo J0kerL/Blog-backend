@@ -73,7 +73,7 @@
     <!-- 文章分页查询 -->
     <select id="pageQuery" resultMap="BaseResultMap">
         SELECT DISTINCT a.* FROM article a
-        <if test="tagIds != null and tagIds.size() > 0">
+        <if test="(tagId != null) or (tagIds != null and tagIds.size() > 0)">
             LEFT JOIN article_tag at ON a.id = at.article_id
         </if>
         <where>
@@ -82,6 +82,9 @@
             </if>
             <if test="categoryId != null">
                 AND a.category_id = #{categoryId}
+            </if>
+            <if test="tagId != null">
+                AND at.tag_id = #{tagId}
             </if>
             <if test="tagIds != null and tagIds.size() > 0">
                 AND at.tag_id IN
