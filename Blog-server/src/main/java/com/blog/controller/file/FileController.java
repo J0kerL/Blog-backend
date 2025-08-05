@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.regex.Pattern;
@@ -83,7 +82,7 @@ public class FileController {
         try {
             // 文件基础验证
             Result<String> validationResult = validateFile(file, type);
-            if (!validationResult.getCode().equals(200)) {
+            if (!Integer.valueOf(200).equals(validationResult.getCode())) {
                 return validationResult;
             }
 
@@ -312,10 +311,9 @@ public class FileController {
      */
     private String buildObjectName(String type, String extension) {
         String directory = getDirectoryByType(type);
-        String dateDir = LocalDateTime.now().format(DATE_FORMATTER);
         String filename = UUID.randomUUID().toString().replace("-", "");
         
-        return String.format("%s/%s/%s%s", directory, dateDir, filename, extension);
+        return String.format("%s/%s%s", directory, filename, extension);
     }
 
     /**

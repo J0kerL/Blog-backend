@@ -11,9 +11,12 @@ import com.blog.exception.AccountAlreadyExistException;
 import com.blog.exception.AccountLockedException;
 import com.blog.exception.AccountNotFoundException;
 import com.blog.exception.PasswordErrorException;
+import com.blog.mapper.ArticleMapper;
+import com.blog.mapper.CommentMapper;
 import com.blog.mapper.UserMapper;
 import com.blog.result.PageResult;
 import com.blog.service.UserService;
+import com.blog.vo.UserStatsVO;
 import com.blog.vo.UserVO;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
@@ -36,6 +39,12 @@ public class UserServiceImpl implements UserService {
 
     @Resource
     private UserMapper userMapper;
+    
+    @Resource
+    private ArticleMapper articleMapper;
+    
+    @Resource
+    private CommentMapper commentMapper;
 
     /**
      * 根据用户名或邮箱查询用户信息
@@ -212,6 +221,30 @@ public class UserServiceImpl implements UserService {
         }
         // 批量删除用户
         userMapper.deleteByIds(ids);
+    }
+
+    /**
+     * 获取用户个人统计数据
+     * @param userId
+     * @return
+     */
+    @Override
+    public UserStatsVO getUserStats(Integer userId) {
+        // 检查用户是否存在
+        if (userMapper.getById(userId) == null) {
+            throw new AccountNotFoundException(USER_NOT_FOUND);
+        }
+        
+        // 获取用户发表的文章数量
+        Long articleCount = articleMapper.countByAuthorId(userId);
+        
+        // 获取用户发表的评论数量
+        Long commentCount = commentMapper.countByUserId(userId);
+        
+        return UserStatsVO.builder()
+                .articleCount(articleCount != null ? articleCount : 0L)
+                .commentCount(commentCount != null ? commentCount : 0L)
+                .build();
     }
 }
 

@@ -3,6 +3,7 @@ package com.blog.service;
 import com.blog.dto.*;
 import com.blog.entity.User;
 import com.blog.result.PageResult;
+import com.blog.vo.UserStatsVO;
 import com.blog.vo.UserVO;
 
 import java.util.List;
@@ -58,4 +59,11 @@ public interface UserService {
      * @param ids
      */
     void deleteByIds(List<Integer> ids);
+
+    /**
+     * 获取用户个人统计数据
+     * @param userId
+     * @return
+     */
+    UserStatsVO getUserStats(Integer userId);
 }

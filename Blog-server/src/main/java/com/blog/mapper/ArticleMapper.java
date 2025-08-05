@@ -92,4 +92,12 @@ public interface ArticleMapper {
      * @return
      */
     List<Map<String, Object>> getDailyArticleCount(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
+
+    /**
+     * 根据作者ID统计文章数量
+     *
+     * @param authorId
+     * @return
+     */
+    Long countByAuthorId(@Param("authorId") Integer authorId);
 }

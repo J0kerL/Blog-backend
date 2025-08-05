@@ -121,4 +121,9 @@
         GROUP BY DATE(create_time)
         ORDER BY date
     </select>
+
+    <!-- 根据作者ID统计文章数量 -->
+    <select id="countByAuthorId" resultType="long">
+        SELECT COUNT(*) FROM article WHERE author_id = #{authorId}
+    </select>
 </mapper>

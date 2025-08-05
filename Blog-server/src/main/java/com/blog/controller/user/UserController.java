@@ -10,6 +10,7 @@ import com.blog.result.Result;
 import com.blog.service.UserService;
 import com.blog.utils.JwtUtil;
 import com.blog.vo.UserLoginVO;
+import com.blog.vo.UserStatsVO;
 import com.blog.vo.UserVO;
 import io.jsonwebtoken.Claims;
 import io.swagger.v3.oas.annotations.Operation;
@@ -271,5 +272,22 @@ public class UserController {
                 .collect(Collectors.toList());
         userService.deleteByIds(idList);
         return Result.success(OPERATE_SUCCESS);
+    }
+
+    /**
+     * 获取当前登录用户的个人统计数据
+     *
+     * @return
+     */
+    @GetMapping("/stats")
+    @Operation(summary = "获取当前登录用户的个人统计数据")
+    public Result<UserStatsVO> getCurrentUserStats() {
+        Integer currentUserId = UserContextHolder.getCurrentId();
+        if (currentUserId == null) {
+            return Result.error(401, "用户未登录");
+        }
+        UserStatsVO userStats = userService.getUserStats(currentUserId);
+        log.info("获取当前用户{}的统计数据：{}", currentUserId, userStats);
+        return Result.success(userStats);
     }
 }

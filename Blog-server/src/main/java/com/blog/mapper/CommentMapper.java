@@ -49,4 +49,12 @@ public interface CommentMapper {
     @Select("select count(*) from comment")
     Long countComments();
 
+    /**
+     * 根据用户ID统计评论数量
+     * @param userId
+     * @return
+     */
+    @Select("select count(*) from comment where userId = #{userId}")
+    Long countByUserId(@Param("userId") Integer userId);
+
 }
