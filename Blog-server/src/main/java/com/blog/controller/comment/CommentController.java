@@ -17,7 +17,7 @@ import java.util.List;
  * @create 2025-01-27
  */
 @RestController
-@RequestMapping("/admin/comment")
+@RequestMapping("/comment")
 @Slf4j
 @Tag(name = "评论管理接口")
 public class CommentController {

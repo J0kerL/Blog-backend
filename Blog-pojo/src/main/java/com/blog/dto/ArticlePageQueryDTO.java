@@ -19,6 +19,9 @@ public class ArticlePageQueryDTO implements Serializable {
     // 分类ID
     private Integer categoryId;
 
+    // 单个标签ID
+    private Integer tagId;
+
     // 标签ID列表
     private List<Integer> tagIds;
 

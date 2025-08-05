@@ -21,7 +21,7 @@ import static com.blog.constant.Constant.OPERATE_SUCCESS;
  */
 @io.swagger.v3.oas.annotations.tags.Tag(name = "标签管理接口")
 @RestController
-@RequestMapping("/admin/tag")
+@RequestMapping("/tag")
 @Slf4j
 public class TagController {
 
