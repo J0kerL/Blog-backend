@@ -54,7 +54,7 @@ public interface CommentMapper {
      * @param userId
      * @return
      */
-    @Select("select count(*) from comment where userId = #{userId}")
+    @Select("select count(*) from comment where user_id = #{userId}")
     Long countByUserId(@Param("userId") Integer userId);
 
 }
