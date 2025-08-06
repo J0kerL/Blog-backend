@@ -1,5 +1,6 @@
 package com.blog.controller.captcha;
 
+import com.blog.annotation.RequireLogin;
 import com.blog.result.Result;
 import com.blog.service.CaptchaService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -32,6 +33,7 @@ public class CaptchaController {
      */
     @Operation(summary = "发送验证码")
     @GetMapping("/sendCaptcha")
+    @RequireLogin(false) // 公开接口，不需要登录
     public Result<String> sendCaptcha(@RequestParam String email) {
         String code = captchaService.sendCaptchaEmail(email);
         return Result.success(code);

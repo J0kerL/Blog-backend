@@ -1,5 +1,6 @@
 package com.blog.controller.menu;
 
+import com.blog.annotation.RequireLogin;
 import com.blog.dto.MenuDTO;
 import com.blog.dto.MenuPageQueryDTO;
 import com.blog.entity.Menu;
@@ -26,6 +27,7 @@ import static com.blog.constant.Constant.OPERATE_SUCCESS;
 @RequestMapping("/admin/menu")
 @Tag(name = "菜单管理接口")
 @Slf4j
+@RequireLogin // 菜单管理功能，需要登录
 public class MenuController {
 
     @Resource

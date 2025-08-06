@@ -1,5 +1,6 @@
 package com.blog.controller.role;
 
+import com.blog.annotation.RequireLogin;
 import com.blog.dto.RoleDTO;
 import com.blog.dto.RolePageQueryDTO;
 import com.blog.result.PageResult;
@@ -23,6 +24,7 @@ import static com.blog.constant.Constant.OPERATE_SUCCESS;
 @Tag(name = "角色相关接口")
 @RestController
 @RequestMapping("/role")
+@RequireLogin // 角色管理功能，需要登录
 public class RoleController {
 
     @Resource

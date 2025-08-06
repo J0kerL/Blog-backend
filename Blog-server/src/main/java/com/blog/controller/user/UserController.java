@@ -1,5 +1,6 @@
 package com.blog.controller.user;
 
+import com.blog.annotation.RequireLogin;
 import com.blog.context.UserContextHolder;
 import com.blog.dto.*;
 import com.blog.entity.User;
@@ -57,6 +58,7 @@ public class UserController {
      */
     @Operation(summary = "根据用户名或邮箱查询用户信息")
     @GetMapping("/{account}")
+    @RequireLogin(false) // 公开接口，不需要登录
     public Result<UserVO> getByAccount(@PathVariable("account") String account) {
         UserVO userVO = userService.getByAccount(account);
         log.info("查询到的用户为：{}", userVO);
@@ -71,6 +73,7 @@ public class UserController {
      */
     @Operation(summary = "注册")
     @PostMapping("/register")
+    @RequireLogin(false) // 公开接口，不需要登录
     public Result<UserVO> register(@RequestBody UserRegisterDTO userRegisterDTO) {
         // 校验验证码
         String storedCaptcha = redisTemplate.opsForValue().get(CODE_KEY + userRegisterDTO.getEmail());
@@ -99,6 +102,7 @@ public class UserController {
      */
     @Operation(summary = "登录")
     @PostMapping("/login")
+    @RequireLogin(false) // 公开接口，不需要登录
     public Result<UserLoginVO> login(@RequestBody UserLoginDTO userLoginDTO) {
         User user = userService.login(userLoginDTO);
         // 登录成功后，生成jwt令牌
@@ -122,6 +126,7 @@ public class UserController {
      */
     @Operation(summary = "获取当前用户信息")
     @GetMapping("/info")
+    @RequireLogin // 需要登录
     public Result<UserVO> getUserInfo(HttpServletRequest request) {
         try {
             // 优先从ThreadLocal获取用户ID
@@ -183,6 +188,7 @@ public class UserController {
      */
     @Operation(summary = "退出登录")
     @PostMapping("/logout")
+    @RequireLogin // 需要登录
     public Result<String> logout(HttpServletRequest request) {
         try {
             // 获取token
@@ -227,6 +233,7 @@ public class UserController {
      */
     @Operation(summary = "用户分页查询")
     @GetMapping("/page")
+    @RequireLogin // 管理功能，需要登录
     public Result<PageResult> pageQuery(UserPageQueryDTO userPageQueryDTO) {
         PageResult pageResult = userService.query(userPageQueryDTO);
         return Result.success(pageResult);
@@ -240,6 +247,7 @@ public class UserController {
      */
     @PostMapping("/add")
     @Operation(summary = "新增用户")
+    @RequireLogin // 管理功能，需要登录
     public Result<String> addUser(@RequestBody AddUserDTO addUserDTO) {
         userService.addUser(addUserDTO);
         return Result.success(OPERATE_SUCCESS);
@@ -253,6 +261,7 @@ public class UserController {
      */
     @PutMapping("/update")
     @Operation(summary = "修改用户")
+    @RequireLogin // 管理功能，需要登录
     public Result<String> updateUser(@RequestBody UserDTO userDTO) {
         userService.updateUser(userDTO);
         return Result.success(OPERATE_SUCCESS);
@@ -266,6 +275,7 @@ public class UserController {
      */
     @DeleteMapping("/delete")
     @Operation(summary = "根据id批量删除用户")
+    @RequireLogin // 管理功能，需要登录
     public Result<String> deleteByIds(@RequestParam("ids") String ids) {
         List<Integer> idList = Arrays.stream(ids.split(","))
                 .map(Integer::parseInt)
@@ -281,6 +291,7 @@ public class UserController {
      */
     @GetMapping("/stats")
     @Operation(summary = "获取当前登录用户的个人统计数据")
+    @RequireLogin // 需要登录
     public Result<UserStatsVO> getCurrentUserStats() {
         Integer currentUserId = UserContextHolder.getCurrentId();
         if (currentUserId == null) {
@@ -289,5 +300,78 @@ public class UserController {
         UserStatsVO userStats = userService.getUserStats(currentUserId);
         log.info("获取当前用户{}的统计数据：{}", currentUserId, userStats);
         return Result.success(userStats);
+    }
+
+    /**
+     * 修改密码
+     *
+     * @param changePasswordDTO
+     * @return
+     */
+    @PutMapping("/change-password")
+    @Operation(summary = "修改密码")
+    @RequireLogin // 需要登录
+    public Result<String> changePassword(@RequestBody ChangePasswordDTO changePasswordDTO) {
+        try {
+            Integer currentUserId = UserContextHolder.getCurrentId();
+            if (currentUserId == null) {
+                return Result.error(401, "用户未登录");
+            }
+            
+            log.info("用户ID: {} 请求修改密码", currentUserId);
+            userService.changePassword(changePasswordDTO, currentUserId);
+            
+            return Result.success("密码修改成功");
+        } catch (Exception e) {
+            log.error("修改密码失败: {}", e.getMessage());
+            return Result.error(e.getMessage());
+        }
+    }
+
+    /**
+     * 重置用户密码
+     *
+     * @param resetPasswordDTO
+     * @return
+     */
+    @PutMapping("/resetPwd")
+    @Operation(summary = "重置用户密码")
+    @RequireLogin // 需要登录
+    public Result<String> resetPassword(@RequestBody ResetPasswordDTO resetPasswordDTO) {
+        try {
+            Integer currentUserId = UserContextHolder.getCurrentId();
+            if (currentUserId == null) {
+                return Result.error(401, "用户未登录");
+            }
+            
+            log.info("用户(ID: {})请求重置用户ID: {} 的密码", currentUserId, resetPasswordDTO.getUserId());
+            userService.resetPassword(resetPasswordDTO);
+            
+            return Result.success("密码重置成功");
+        } catch (Exception e) {
+            log.error("重置密码失败: {}", e.getMessage());
+            return Result.error(e.getMessage());
+        }
+    }
+
+    /**
+     * 忘记密码 - 通过账号重置密码
+     *
+     * @param forgetPasswordDTO
+     * @return
+     */
+    @PutMapping("/forgetPassword")
+    @Operation(summary = "忘记密码")
+    @RequireLogin(false) // 公开接口，不需要登录
+    public Result<String> forgetPassword(@RequestBody ForgetPasswordDTO forgetPasswordDTO) {
+        try {
+            log.info("用户账号: {} 请求忘记密码重置", forgetPasswordDTO.getAccount());
+            userService.forgetPassword(forgetPasswordDTO);
+            
+            return Result.success("密码重置成功，请重新登录");
+        } catch (Exception e) {
+            log.error("忘记密码重置失败: {}", e.getMessage());
+            return Result.error(e.getMessage());
+        }
     }
 }

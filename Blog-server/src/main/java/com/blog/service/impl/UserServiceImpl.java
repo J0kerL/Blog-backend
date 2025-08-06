@@ -2,6 +2,9 @@ package com.blog.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.blog.dto.AddUserDTO;
+import com.blog.dto.ChangePasswordDTO;
+import com.blog.dto.ForgetPasswordDTO;
+import com.blog.dto.ResetPasswordDTO;
 import com.blog.dto.UserDTO;
 import com.blog.dto.UserLoginDTO;
 import com.blog.dto.UserPageQueryDTO;
@@ -245,6 +248,106 @@ public class UserServiceImpl implements UserService {
                 .articleCount(articleCount != null ? articleCount : 0L)
                 .commentCount(commentCount != null ? commentCount : 0L)
                 .build();
+    }
+
+    /**
+     * 修改密码
+     * @param changePasswordDTO
+     * @param userId
+     */
+    @Override
+    public void changePassword(ChangePasswordDTO changePasswordDTO, Integer userId) {
+        // 1. 验证新密码和确认密码是否一致
+        if (!changePasswordDTO.getNewPassword().equals(changePasswordDTO.getConfirmPassword())) {
+            throw new PasswordErrorException("新密码和确认密码不一致");
+        }
+        
+        // 2. 查询用户信息
+        User user = userMapper.getById(userId);
+        if (user == null) {
+            throw new AccountNotFoundException(USER_NOT_FOUND);
+        }
+        
+        // 3. 验证原密码是否正确
+        if (!user.getPassword().equals(changePasswordDTO.getOldPassword())) {
+            throw new PasswordErrorException("原密码错误");
+        }
+        
+        // 4. 验证新密码不能与原密码相同
+        if (changePasswordDTO.getOldPassword().equals(changePasswordDTO.getNewPassword())) {
+            throw new PasswordErrorException("新密码不能与原密码相同");
+        }
+        
+        // 5. 更新密码
+        userMapper.updatePassword(userId, changePasswordDTO.getNewPassword());
+        
+        log.info("用户ID: {} 修改密码成功", userId);
+    }
+
+    /**
+     * 重置用户密码（管理员功能）
+     * @param resetPasswordDTO
+     */
+    @Override
+    public void resetPassword(ResetPasswordDTO resetPasswordDTO) {
+        // 1. 验证用户是否存在
+        User user = userMapper.getById(resetPasswordDTO.getUserId());
+        if (user == null) {
+            throw new AccountNotFoundException(USER_NOT_FOUND);
+        }
+        
+        // 2. 验证新密码不能为空
+        if (resetPasswordDTO.getNewPassword() == null || resetPasswordDTO.getNewPassword().trim().isEmpty()) {
+            throw new PasswordErrorException("新密码不能为空");
+        }
+        
+        // 3. 验证新密码长度
+        if (resetPasswordDTO.getNewPassword().length() < 4 || resetPasswordDTO.getNewPassword().length() > 20) {
+            throw new PasswordErrorException("密码长度必须在4-20个字符之间");
+        }
+        
+        // 4. 更新密码
+        userMapper.updatePassword(resetPasswordDTO.getUserId(), resetPasswordDTO.getNewPassword());
+        
+        log.info("用户ID: {} 的密码重置成功", resetPasswordDTO.getUserId());
+    }
+
+    /**
+     * 忘记密码 - 通过账号重置密码
+     * @param forgetPasswordDTO
+     */
+    @Override
+    public void forgetPassword(ForgetPasswordDTO forgetPasswordDTO) {
+        // 1. 验证新密码和确认密码是否一致
+        if (!forgetPasswordDTO.getNewPassword().equals(forgetPasswordDTO.getConfirmPassword())) {
+            throw new PasswordErrorException("新密码和确认密码不一致");
+        }
+        
+        // 2. 根据账号查询用户信息
+        User user = userMapper.getByAccount(forgetPasswordDTO.getAccount());
+        if (user == null) {
+            throw new AccountNotFoundException("用户不存在，请检查用户名或邮箱");
+        }
+        
+        // 3. 验证新密码不能为空
+        if (forgetPasswordDTO.getNewPassword() == null || forgetPasswordDTO.getNewPassword().trim().isEmpty()) {
+            throw new PasswordErrorException("新密码不能为空");
+        }
+        
+        // 4. 验证新密码长度
+        if (forgetPasswordDTO.getNewPassword().length() < 4 || forgetPasswordDTO.getNewPassword().length() > 20) {
+            throw new PasswordErrorException("密码长度必须在4-20个字符之间");
+        }
+        
+        // 5. 验证新密码不能与原密码相同
+        if (user.getPassword().equals(forgetPasswordDTO.getNewPassword())) {
+            throw new PasswordErrorException("新密码不能与原密码相同");
+        }
+        
+        // 6. 更新密码
+        userMapper.updatePassword(user.getId(), forgetPasswordDTO.getNewPassword());
+        
+        log.info("用户账号: {} (ID: {}) 通过忘记密码功能重置密码成功", forgetPasswordDTO.getAccount(), user.getId());
     }
 }
 

@@ -76,7 +76,7 @@ blog:
   jwt:
     # 设置jwt签名加密时使用的秘钥
     secret-key: DiamondBlog
-    # 设置jwt过期时间 2小时
+    # 设置jwt过期时间 1小时
     ttl: 3600000
     # 设置前端传递过来的令牌名称
     token-name: Authorization

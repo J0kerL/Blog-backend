@@ -6,6 +6,7 @@ import com.blog.entity.User;
 import com.github.pagehelper.Page;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
 
@@ -81,4 +82,12 @@ public interface UserMapper {
      */
     @Select("select count(*) from user")
     Long countUsers();
+
+    /**
+     * 更新用户密码
+     * @param userId
+     * @param newPassword
+     */
+    @Update("update user set password = #{newPassword} where id = #{userId}")
+    void updatePassword(Integer userId, String newPassword);
 }

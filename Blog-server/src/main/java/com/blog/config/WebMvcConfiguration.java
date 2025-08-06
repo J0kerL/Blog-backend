@@ -28,25 +28,13 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
         registry.addInterceptor(jwtTokenInterceptor)
                 .addPathPatterns("/**")
                 .excludePathPatterns(
-                        "/**/user/{account}",
-                        "/**/login",
-                        "/**/register",
-                        "/captcha/**",
-                        // 公开的文章接口
-                        "/article/page",
-                        "/article/get/**",
-                        // 公开的分类接口
-                        "/category/list",
-                        "/category/page",
-                        // 公开的标签接口
-                        "/tag/list",
-                        // 公开的仪表板接口
-                        "/dashboard/**",
-                        // Knife4j 文档路径
+                        // 只排除静态资源和文档路径
                         "/doc.html",
                         "/swagger-ui/**",
                         "/swagger-ui.html",
-                        "/v3/api-docs/**")
+                        "/v3/api-docs/**",
+                        "/webjars/**",
+                        "/favicon.ico")
         ;
     }
 

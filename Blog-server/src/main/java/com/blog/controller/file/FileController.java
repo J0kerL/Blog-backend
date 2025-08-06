@@ -1,5 +1,6 @@
 package com.blog.controller.file;
 
+import com.blog.annotation.RequireLogin;
 import com.blog.result.Result;
 import com.blog.utils.AliOssUtil;
 import io.swagger.v3.oas.annotations.Operation;
@@ -75,6 +76,7 @@ public class FileController {
      */
     @PostMapping("/upload")
     @Operation(summary = "文件上传", description = "支持图片、文档、视频、音频等多种文件类型上传到阿里云OSS")
+    @RequireLogin // 需要登录
     public Result<String> uploadFile(
             @RequestParam("file") @Parameter(description = "要上传的文件") MultipartFile file,
             @RequestParam(value = "type", defaultValue = "image") @Parameter(description = "文件类型：avatar/image/document/video/audio") String type) {
@@ -117,6 +119,7 @@ public class FileController {
      */
     @PostMapping("/batch-upload")
     @Operation(summary = "批量文件上传", description = "一次性上传多个文件，最多支持10个文件")
+    @RequireLogin // 需要登录
     public Result<List<String>> batchUploadFiles(
             @RequestParam("files") @Parameter(description = "要上传的文件列表") MultipartFile[] files,
             @RequestParam(value = "type", defaultValue = "image") @Parameter(description = "文件类型") String type) {

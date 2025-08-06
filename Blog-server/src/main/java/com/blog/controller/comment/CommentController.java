@@ -1,5 +1,6 @@
 package com.blog.controller.comment;
 
+import com.blog.annotation.RequireLogin;
 import com.blog.dto.CommentPageQueryDTO;
 import com.blog.result.PageResult;
 import com.blog.result.Result;
@@ -30,6 +31,7 @@ public class CommentController {
      */
     @Operation(summary = "评论分页查询")
     @GetMapping("/page")
+    @RequireLogin(false) // 公开接口，不需要登录
     public Result<PageResult> pageQuery(CommentPageQueryDTO commentPageQueryDTO) {
         log.info("评论分页查询，参数：{}", commentPageQueryDTO);
         PageResult pageResult = commentService.pageQuery(commentPageQueryDTO);
@@ -41,6 +43,7 @@ public class CommentController {
      */
     @Operation(summary = "批量删除评论")
     @DeleteMapping("/batch")
+    @RequireLogin // 需要登录
     public Result<String> batchDelete(@RequestBody List<Integer> ids) {
         log.info("批量删除评论，ids：{}", ids);
         commentService.batchDelete(ids);

@@ -1,5 +1,6 @@
 package com.blog.controller.category;
 
+import com.blog.annotation.RequireLogin;
 import com.blog.dto.*;
 import com.blog.entity.Category;
 import com.blog.result.PageResult;
@@ -30,6 +31,7 @@ public class CategoryController {
      */
     @Operation(summary = "分类分页查询")
     @GetMapping("/page")
+    @RequireLogin(false) // 公开接口，不需要登录
     public Result<PageResult> pageQuery(CategoryPageQueryDTO categoryPageQueryDTO) {
         PageResult pageResult = categoryService.pageQuery(categoryPageQueryDTO);
         return Result.success(pageResult);
@@ -40,6 +42,7 @@ public class CategoryController {
      */
     @PostMapping("/add")
     @Operation(summary = "新增分类")
+    @RequireLogin // 需要登录
     public Result<String> addCategory(@RequestBody CategoryDTO categoryDTO) {
         categoryService.addCategory(categoryDTO);
         return Result.success("新增分类成功");
@@ -50,6 +53,7 @@ public class CategoryController {
      */
     @PutMapping("/update")
     @Operation(summary = "修改分类")
+    @RequireLogin // 需要登录
     public Result<String> updateCategory(@RequestBody CategoryDTO categoryDTO) {
         categoryService.updateCategory(categoryDTO);
         return Result.success("修改分类成功");
@@ -60,6 +64,7 @@ public class CategoryController {
      */
     @DeleteMapping("/delete")
     @Operation(summary = "删除分类")
+    @RequireLogin // 需要登录
     public Result<String> deleteByIds(@RequestParam("ids") String ids) {
         categoryService.deleteByIds(ids);
         return Result.success("删除分类成功");
@@ -71,6 +76,7 @@ public class CategoryController {
      */
     @GetMapping("/list")
     @Operation(summary = "查询所有分类")
+    @RequireLogin(false) // 公开接口，不需要登录
     public Result<List<Category>> list() {
         log.info("查询所有分类");
         List<Category> categories = categoryService.list();

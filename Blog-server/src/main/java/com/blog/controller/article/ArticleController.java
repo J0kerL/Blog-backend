@@ -1,5 +1,6 @@
 package com.blog.controller.article;
 
+import com.blog.annotation.RequireLogin;
 import com.blog.result.PageResult;
 import com.blog.dto.ArticleAddDTO;
 import com.blog.dto.ArticleUpdateDTO;
@@ -32,6 +33,7 @@ public class ArticleController {
 
     @PostMapping("/add")
     @Operation(summary = "新增文章")
+    @RequireLogin // 需要登录
     public Result<String> add(@RequestBody ArticleAddDTO articleAddDTO) {
         articleService.add(articleAddDTO);
         return Result.success(OPERATE_SUCCESS);
@@ -39,6 +41,7 @@ public class ArticleController {
 
     @PutMapping("/update")
     @Operation(summary = "更新文章")
+    @RequireLogin // 需要登录
     public Result<String> update(@RequestBody ArticleUpdateDTO articleUpdateDTO) {
         articleService.update(articleUpdateDTO);
         return Result.success(OPERATE_SUCCESS);
@@ -53,6 +56,7 @@ public class ArticleController {
 
     @DeleteMapping("/delete")
     @Operation(summary = "批量删除文章")
+    @RequireLogin // 需要登录
     public Result<String> batchDelete(@RequestParam("ids") String ids) {
         List<Integer> idList = Arrays.stream(ids.split(","))
                 .map(Integer::parseInt)
@@ -63,6 +67,7 @@ public class ArticleController {
 
     @GetMapping("/get/{id}")
     @Operation(summary = "获取文章详情")
+    @RequireLogin(false) // 公开接口，不需要登录
     public Result<ArticleVO> getById(@PathVariable Integer id) {
         ArticleVO articleVO = articleService.getById(id);
         return Result.success(articleVO);
@@ -70,6 +75,7 @@ public class ArticleController {
 
     @GetMapping("/page")
     @Operation(summary = "文章分页查询")
+    @RequireLogin(false) // 公开接口，不需要登录
     public Result<PageResult> pageQuery(ArticlePageQueryDTO articlePageQueryDTO) {
         PageResult pageResult = articleService.pageQuery(articlePageQueryDTO);
         return Result.success(pageResult);

@@ -1,5 +1,6 @@
 package com.blog.interceptor;
 
+import com.blog.annotation.RequireLogin;
 import com.blog.context.UserContextHolder;
 import com.blog.properties.JwtProperties;
 import com.blog.utils.JwtUtil;
@@ -12,6 +13,8 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
+
+import java.lang.reflect.Method;
 
 import static com.blog.constant.Constant.*;
 
@@ -38,48 +41,76 @@ public class JwtTokenInterceptor implements HandlerInterceptor {
             return true;
         }
         
+        HandlerMethod handlerMethod = (HandlerMethod) handler;
+        Method method = handlerMethod.getMethod();
+        Class<?> clazz = method.getDeclaringClass();
+        
         log.info("JWT拦截器拦截请求: {}", request.getRequestURI());
+
+        // 检查方法或类上是否有@RequireLogin注解
+        RequireLogin methodAnnotation = method.getAnnotation(RequireLogin.class);
+        RequireLogin classAnnotation = clazz.getAnnotation(RequireLogin.class);
+        
+        boolean requireLogin = false;
+        
+        // 方法级注解优先于类级注解
+        if (methodAnnotation != null) {
+            requireLogin = methodAnnotation.value();
+        } else if (classAnnotation != null) {
+            requireLogin = classAnnotation.value();
+        }
 
         //1、从请求头中获取令牌
         String token = request.getHeader(jwtProperties.getTokenName());
         
-        if (token == null || token.isEmpty()) {
-            log.warn(TOKEN_IS_NULL);
+        // 尝试解析token并设置用户信息（无论是否需要登录都尝试解析）
+        Integer userId = null;
+        if (token != null && !token.isEmpty()) {
+            try {
+                //2、检查token是否在黑名单中
+                String blacklistKey = "blacklist:logout:token";
+                String blacklistedToken = redisTemplate.opsForValue().get(blacklistKey);
+                if (token.equals(blacklistedToken)) {
+                    log.warn("Token已在黑名单中: {}", token);
+                    if (requireLogin) {
+                        response.setStatus(401);
+                        response.setContentType("application/json;charset=utf-8");
+                        response.getWriter().write(TOKEN_ERROR);
+                        return false;
+                    }
+                } else {
+                    //3、校验令牌
+                    log.info("jwt校验:{}", token);
+                    Claims claims = JwtUtil.parseJWT(jwtProperties.getSecretKey(), token);
+                    userId = Integer.valueOf(claims.get(USER_ID).toString());
+                    log.info("当前用户id：{}", userId);
+                    // 把当前登录用户的id存入本地线程变量中
+                    UserContextHolder.setCurrentId(userId);
+                }
+            } catch (Exception ex) {
+                log.error("token验证失败:{}", ex.getMessage());
+                // 如果需要登录但token无效，返回401
+                if (requireLogin) {
+                    response.setStatus(401);
+                    response.setContentType("application/json;charset=utf-8");
+                    response.getWriter().write(TOKEN_ERROR);
+                    return false;
+                }
+                // 如果不需要登录，token无效也继续执行，但不设置用户信息
+            }
+        }
+        
+        // 如果需要登录但没有有效的用户信息，返回401
+        if (requireLogin && userId == null) {
+            log.warn("接口需要登录但未提供有效token: {}", request.getRequestURI());
             response.setStatus(401);
             response.setContentType("application/json;charset=utf-8");
             response.getWriter().write(TOKEN_ERROR);
             return false;
         }
-
-        //2、检查token是否在黑名单中
-        String blacklistKey = "blacklist:logout:token";
-        String blacklistedToken = redisTemplate.opsForValue().get(blacklistKey);
-        if (token.equals(blacklistedToken)) {
-            log.warn("Token已在黑名单中，拒绝访问: {}", token);
-            response.setStatus(401);
-            response.setContentType("application/json;charset=utf-8");
-            response.getWriter().write(TOKEN_ERROR);
-            return false;
-        }
-
-        //3、校验令牌
-        try {
-            log.info("jwt校验:{}", token);
-            Claims claims = JwtUtil.parseJWT(jwtProperties.getSecretKey(), token);
-            Integer userId = Integer.valueOf(claims.get(USER_ID).toString());
-            log.info("当前用户id：{}", userId);
-            // 把当前登录用户的id存入本地线程变量中
-            UserContextHolder.setCurrentId(userId);
-            //4、通过，放行
-            return true;
-        } catch (Exception ex) {
-            //5、不通过，响应401状态码
-            response.setStatus(401);
-            response.setContentType("application/json;charset=utf-8");
-            response.getWriter().write(TOKEN_ERROR);
-            log.error("token验证失败:{}", ex.getMessage());
-            return false;
-        }
+        
+        //4、通过，放行
+        return true;
     }
     
     @Override

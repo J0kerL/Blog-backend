@@ -66,4 +66,23 @@ public interface UserService {
      * @return
      */
     UserStatsVO getUserStats(Integer userId);
+
+    /**
+     * 修改密码
+     * @param changePasswordDTO
+     * @param userId
+     */
+    void changePassword(ChangePasswordDTO changePasswordDTO, Integer userId);
+
+    /**
+     * 重置用户密码（管理员功能）
+     * @param resetPasswordDTO
+     */
+    void resetPassword(ResetPasswordDTO resetPasswordDTO);
+
+    /**
+     * 忘记密码 - 通过账号重置密码
+     * @param forgetPasswordDTO
+     */
+    void forgetPassword(ForgetPasswordDTO forgetPasswordDTO);
 }

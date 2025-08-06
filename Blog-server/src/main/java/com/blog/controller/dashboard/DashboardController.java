@@ -1,5 +1,6 @@
 package com.blog.controller.dashboard;
 
+import com.blog.annotation.RequireLogin;
 import com.blog.result.Result;
 import com.blog.service.DashboardService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -31,6 +32,7 @@ public class DashboardController {
      */
     @GetMapping("/stats")
     @Operation(summary = "获取仪表盘统计数据")
+    @RequireLogin(false) // 公开接口，不需要登录
     public Result<Map<String, Object>> getStats() {
         log.info("获取仪表盘统计数据");
         Map<String, Object> stats = dashboardService.getStats();
@@ -43,6 +45,7 @@ public class DashboardController {
      */
     @GetMapping("/categories")
     @Operation(summary = "获取分类统计数据")
+    @RequireLogin(false) // 公开接口，不需要登录
     public Result<Map<String, Object>> getCategoryStats() {
         log.info("获取分类统计数据");
         Map<String, Object> categoryStats = dashboardService.getCategoryStats();
