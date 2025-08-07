@@ -22,6 +22,9 @@ public class ArticleUpdateDTO implements Serializable {
     @Schema(description = "文章内容")
     private String content;
 
+    @Schema(description = "文章摘要")
+    private String summary;
+
     @Schema(description = "文章封面")
     private String cover;
 

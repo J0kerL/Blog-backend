@@ -49,6 +49,13 @@ public class ArticleServiceImpl implements ArticleService {
     public void add(ArticleAddDTO articleAddDTO) {
         Article article = new Article();
         BeanUtils.copyProperties(articleAddDTO, article);
+        
+        // 如果没有提供摘要，自动从内容生成
+        if ((article.getSummary() == null || article.getSummary().trim().isEmpty()) 
+            && article.getContent() != null) {
+            article.setSummary(generateSummaryFromContent(article.getContent()));
+        }
+        
         // 获取当前登录用户ID
         Integer currentUserId = UserContextHolder.getCurrentId();
         article.setAuthorId(currentUserId);
@@ -76,6 +83,13 @@ public class ArticleServiceImpl implements ArticleService {
         // 存在 执行更新操作
         Article article = new Article();
         BeanUtils.copyProperties(articleUpdateDTO, article);
+        
+        // 如果没有提供摘要但更新了内容，自动从内容生成摘要
+        if ((article.getSummary() == null || article.getSummary().trim().isEmpty()) 
+            && article.getContent() != null) {
+            article.setSummary(generateSummaryFromContent(article.getContent()));
+        }
+        
         articleMapper.update(article);
 
         // 更新标签
@@ -187,5 +201,54 @@ public class ArticleServiceImpl implements ArticleService {
         articleVO.setTags(articleTagMapper.selectTagNamesByArticleId(article.getId()));
 
         return articleVO;
+    }
+
+    /**
+     * 从Markdown内容自动生成摘要
+     *
+     * @param content Markdown格式的文章内容
+     * @return 生成的摘要
+     */
+    private String generateSummaryFromContent(String content) {
+        if (content == null || content.trim().isEmpty()) {
+            return "暂无内容摘要";
+        }
+
+        // 移除Markdown语法，生成纯文本摘要
+        String plainText = content
+                // 移除标题语法
+                .replaceAll("#{1,6}\\s+", "")
+                // 移除粗体语法
+                .replaceAll("\\*\\*(.*?)\\*\\*", "$1")
+                // 移除斜体语法
+                .replaceAll("\\*(.*?)\\*", "$1")
+                // 移除代码块
+                .replaceAll("```[\\s\\S]*?```", "")
+                // 移除行内代码
+                .replaceAll("`(.*?)`", "$1")
+                // 移除图片语法
+                .replaceAll("!\\[.*?\\]\\(.*?\\)", "")
+                // 移除链接语法
+                .replaceAll("\\[.*?\\]\\(.*?\\)", "")
+                // 移除引用语法
+                .replaceAll("^>\\s+", "")
+                // 移除列表语法
+                .replaceAll("^[-*+]\\s+", "")
+                .replaceAll("^\\d+\\.\\s+", "")
+                // 移除表格语法
+                .replaceAll("\\|.*\\|", "")
+                .replaceAll("[-:]+", "")
+                // 替换多个换行为单个空格
+                .replaceAll("\\n+", " ")
+                // 移除多余空格
+                .replaceAll("\\s+", " ")
+                .trim();
+
+        // 截取前200个字符作为摘要
+        if (plainText.length() > 200) {
+            return plainText.substring(0, 200) + "...";
+        }
+        
+        return plainText.isEmpty() ? "暂无内容摘要" : plainText;
     }
 }

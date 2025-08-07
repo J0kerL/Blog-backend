@@ -5,6 +5,7 @@
         <id column="id" property="id"/>
         <result column="title" property="title"/>
         <result column="content" property="content"/>
+        <result column="summary" property="summary"/>
         <result column="cover" property="cover"/>
         <result column="category_id" property="categoryId"/>
         <result column="author_id" property="authorId"/>
@@ -13,14 +14,14 @@
 
     <!-- 新增文章 -->
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO article (title, content, cover, category_id, author_id, status)
-        VALUES (#{title}, #{content}, #{cover}, #{categoryId}, #{authorId}, #{status})
+        INSERT INTO article (title, content, summary, cover, category_id, author_id, status)
+        VALUES (#{title}, #{content}, #{summary}, #{cover}, #{categoryId}, #{authorId}, #{status})
     </insert>
 
     <!-- 更新文章 -->
     <update id="update">
         <choose>
-            <when test="title != null or content != null or categoryId != null or status != null">
+            <when test="title != null or content != null or summary != null or categoryId != null or status != null">
                 UPDATE article
                 <set>
                     <if test="title != null">
@@ -28,6 +29,9 @@
                     </if>
                     <if test="content != null">
                         content = #{content},
+                    </if>
+                    <if test="summary != null">
+                        summary = #{summary},
                     </if>
                     <if test="cover != null">
                         cover = #{cover},
