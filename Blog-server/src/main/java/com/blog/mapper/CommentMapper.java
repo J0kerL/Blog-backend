@@ -1,6 +1,10 @@
 package com.blog.mapper;
 
+import com.blog.dto.AddCommentDTO;
+import com.blog.dto.CommentAdminPageQueryDTO;
 import com.blog.dto.CommentPageQueryDTO;
+import com.blog.vo.AddCommentVO;
+import com.blog.vo.CommentAdminVO;
 import com.blog.vo.CommentVO;
 import com.github.pagehelper.Page;
 import org.apache.ibatis.annotations.Param;
@@ -57,4 +61,32 @@ public interface CommentMapper {
     @Select("select count(*) from comment where user_id = #{userId}")
     Long countByUserId(@Param("userId") Integer userId);
 
+    /**
+     * 根据文章ID统计总评论数量（包括子评论）
+     * @param articleId
+     * @return
+     */
+    @Select("select count(*) from comment where article_id = #{articleId}")
+    Long countByArticleId(@Param("articleId") Integer articleId);
+
+    /**
+     * 插入评论
+     * @param addCommentDTO
+     * @return
+     */
+    int insertComment(AddCommentDTO addCommentDTO);
+
+    /**
+     * 根据ID查询评论详情
+     * @param id
+     * @return
+     */
+    AddCommentVO selectCommentById(@Param("id") Integer id);
+
+    /**
+     * 管理端分页查询评论
+     * @param commentAdminPageQueryDTO
+     * @return
+     */
+    Page<CommentAdminVO> adminPageQuery(CommentAdminPageQueryDTO commentAdminPageQueryDTO);
 }

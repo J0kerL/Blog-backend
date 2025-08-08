@@ -10,14 +10,11 @@ import java.io.Serializable;
  * @create 2025-01-27
  */
 @Data
-@Schema(description = "评论分页查询DTO")
-public class CommentPageQueryDTO implements Serializable {
-    
-    @Schema(description = "文章ID")
-    private Integer articleId;
-    
-    @Schema(description = "父评论ID，为null时查询主评论，有值时查询子评论")
-    private Integer parentId;
+@Schema(description = "管理端评论分页查询DTO")
+public class CommentAdminPageQueryDTO implements Serializable {
+
+    @Schema(description = "文章标题")
+    private String articleTitle;
     
     @Schema(description = "评论用户名")
     private String username;

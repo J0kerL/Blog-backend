@@ -42,5 +42,14 @@ public class CommentVO {
     
     // 创建时间
     private LocalDateTime createTime;
+    
+    // 子评论数量（仅主评论有此字段）
+    private Long childCommentCount;
+    
+    // 被回复的评论ID（用于显示回复关系）
+    private Integer replyToCommentId;
+    
+    // 被回复的用户名（用于显示@用户名）
+    private String replyToUsername;
 
 }

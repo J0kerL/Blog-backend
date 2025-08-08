@@ -13,13 +13,33 @@
             u.avatar as userAvatar,
             c.content,
             c.parent_id as parentId,
-            c.create_time as createTime
+            c.reply_to_comment_id as replyToCommentId,
+            ru.username as replyToUsername,
+            c.create_time as createTime,
+            <choose>
+                <when test="parentId == null">
+                    <!-- 查询主评论时，统计子评论数量 -->
+                    (SELECT COUNT(*) FROM comment child WHERE child.parent_id = c.id) as childCommentCount
+                </when>
+                <otherwise>
+                    <!-- 查询子评论时，不需要统计子评论数量 -->
+                    0 as childCommentCount
+                </otherwise>
+            </choose>
         FROM comment c
         LEFT JOIN article a ON c.article_id = a.id
         LEFT JOIN user u ON c.user_id = u.id
+        LEFT JOIN comment rc ON c.reply_to_comment_id = rc.id
+        LEFT JOIN user ru ON rc.user_id = ru.id
         <where>
             <if test="articleId != null">
                 AND c.article_id = #{articleId}
+            </if>
+            <if test="parentId != null">
+                AND c.parent_id = #{parentId}
+            </if>
+            <if test="parentId == null">
+                AND c.parent_id IS NULL
             </if>
             <if test="username != null and username != ''">
                 AND u.username LIKE CONCAT('%', #{username}, '%')
@@ -53,4 +73,51 @@
             #{articleId}
         </foreach>
     </delete>
+    
+    <!-- 插入评论 -->
+    <insert id="insertComment" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO comment (article_id, user_id, content, parent_id, reply_to_comment_id, create_time)
+        VALUES (#{articleId}, #{userId}, #{content}, #{parentId}, #{replyToCommentId}, #{createTime})
+    </insert>
+    
+    <!-- 根据ID查询评论详情 -->
+    <select id="selectCommentById" resultType="com.blog.vo.AddCommentVO">
+        SELECT 
+            id,
+            article_id as articleId,
+            user_id as userId,
+            content,
+            parent_id as parentId,
+            create_time as createTime
+        FROM comment
+        WHERE id = #{id}
+    </select>
+
+    <!-- 管理端分页查询评论 -->
+    <select id="adminPageQuery" resultType="com.blog.vo.CommentAdminVO">
+        SELECT
+        c.id,
+        c.article_id as articleId,
+        a.title as articleTitle,
+        c.user_id as userId,
+        u.username,
+        u.avatar as userAvatar,
+        c.content,
+        c.create_time as createTime
+        FROM comment c
+        LEFT JOIN article a ON c.article_id = a.id
+        LEFT JOIN user u ON c.user_id = u.id
+        <where>
+            <if test="articleTitle != null and articleTitle != ''">
+                AND a.title LIKE CONCAT('%', #{articleTitle}, '%')
+            </if>
+            <if test="username != null and username != ''">
+                AND u.username LIKE CONCAT('%', #{username}, '%')
+            </if>
+            <if test="content != null and content != ''">
+                AND c.content LIKE CONCAT('%', #{content}, '%')
+            </if>
+        </where>
+        ORDER BY c.create_time DESC
+    </select>
 </mapper>
