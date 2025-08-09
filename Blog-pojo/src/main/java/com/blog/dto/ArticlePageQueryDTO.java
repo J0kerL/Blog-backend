@@ -30,4 +30,7 @@ public class ArticlePageQueryDTO implements Serializable {
 
     // 每页显示记录数
     private int pageSize;
+
+    // 当前用户ID（用于过滤草稿文章）
+    private Integer currentUserId;
 }

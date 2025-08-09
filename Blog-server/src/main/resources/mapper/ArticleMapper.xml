@@ -96,6 +96,13 @@
                     #{tagId}
                 </foreach>
             </if>
+            <!-- 文章状态过滤：已发布的文章所有人都能看到，草稿只有作者能看到 -->
+            <if test="currentUserId != null">
+                AND (a.status = 1 OR (a.status = 0 AND a.author_id = #{currentUserId}))
+            </if>
+            <if test="currentUserId == null">
+                AND a.status = 1
+            </if>
         </where>
         ORDER BY a.id DESC
     </select>

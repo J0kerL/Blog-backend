@@ -164,7 +164,17 @@ public class ArticleServiceImpl implements ArticleService {
             // 不存在 返回错误信息
             throw new ArticleNotFoundException(ARTICLE_NOT_FOUND);
         }
-        // 存在 执行查询操作
+        
+        // 检查文章访问权限：草稿文章只有作者能访问
+        Integer currentUserId = UserContextHolder.getCurrentId();
+        if (article.getStatus() == 0) { // 草稿状态
+            if (currentUserId == null || !currentUserId.equals(article.getAuthorId())) {
+                // 未登录或不是作者，无权访问草稿
+                throw new ArticleNotFoundException(ARTICLE_NOT_FOUND);
+            }
+        }
+        
+        // 存在且有权限 执行查询操作
         return convertToVO(article);
     }
 
@@ -176,6 +186,10 @@ public class ArticleServiceImpl implements ArticleService {
      */
     @Override
     public PageResult pageQuery(ArticlePageQueryDTO articlePageQueryDTO) {
+        // 设置当前用户ID，用于过滤草稿文章
+        Integer currentUserId = UserContextHolder.getCurrentId();
+        articlePageQueryDTO.setCurrentUserId(currentUserId);
+        
         PageHelper.startPage(articlePageQueryDTO.getPage(), articlePageQueryDTO.getPageSize());
         Page<Article> page = articleMapper.pageQuery(articlePageQueryDTO);
 
